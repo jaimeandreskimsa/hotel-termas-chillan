@@ -24,16 +24,7 @@ export default function AdminLoginPage() {
     <div className="min-h-svh bg-[#1B4332] flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col leading-none">
-              <span className="text-white font-bold text-[11px] tracking-widest uppercase">Hotel</span>
-              <span className="text-white font-bold text-[15px] tracking-widest uppercase">Termas</span>
-              <span className="text-white font-bold text-[11px] tracking-widest uppercase">Chillán</span>
-            </div>
-            <svg width="44" height="44" viewBox="0 0 40 40" fill="none">
-              <path d="M3 35L13 13L20 25L27 15L37 35H3Z" fill="white" fillOpacity="0.9"/>
-            </svg>
-          </div>
+          <img src="/images/logo.png" alt="Hotel Termas Chillán" className="h-20 w-auto object-contain" />
         </div>
 
         <div className="bg-white rounded-3xl p-8 shadow-xl">
