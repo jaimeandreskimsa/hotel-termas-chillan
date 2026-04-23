@@ -285,7 +285,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <BottomNav guestName={guestName} />
+      <BottomNav />
     </div>
   );
 }

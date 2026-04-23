@@ -32,7 +32,7 @@ export default async function LogsPage() {
   return (
     <AdminShell>
       <LogsClient
-        initialLogs={logs.map((l) => ({
+        initialLogs={logs.map((l: typeof logs[number]) => ({
           ...l,
           createdAt: l.createdAt?.toISOString() ?? new Date().toISOString(),
         }))}
