@@ -1,9 +1,14 @@
 import * as schema from "./schema";
 
-const url = process.env.DATABASE_URL!;
-
 // Use neon-http for remote Neon instances, postgres driver for local
-function createDb() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyDb = any;
+
+let _db: AnyDb | null = null;
+
+function createDb(): AnyDb {
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error("DATABASE_URL environment variable is not set");
   if (url.includes("neon.tech") || url.includes("neon.database")) {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { neon } = require("@neondatabase/serverless");
@@ -19,4 +24,10 @@ function createDb() {
   }
 }
 
-export const db = createDb();
+// Lazy proxy — DB is only initialized on first actual use (not at import time)
+export const db: AnyDb = new Proxy({} as AnyDb, {
+  get(_, prop: string | symbol) {
+    if (!_db) _db = createDb();
+    return (_db as AnyDb)[prop];
+  },
+});
