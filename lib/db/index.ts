@@ -28,6 +28,9 @@ function createDb(): AnyDb {
 export const db: AnyDb = new Proxy({} as AnyDb, {
   get(_, prop: string | symbol) {
     if (!_db) _db = createDb();
-    return (_db as AnyDb)[prop];
+    const val = (_db as AnyDb)[prop];
+    // Bind methods to the real DB instance so Drizzle's internal `this` references work
+    if (typeof val === "function") return val.bind(_db);
+    return val;
   },
 });
