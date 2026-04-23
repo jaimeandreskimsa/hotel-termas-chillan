@@ -22,7 +22,7 @@ export default function LoginPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "login", module: null, actorName: guestData.name, actorEmail: guestData.email, details: "Guest inició sesión en la PWA" }),
     }).catch(() => {});
-    router.push("/home");
+    router.push("/huespedes");
   };
 
   return (

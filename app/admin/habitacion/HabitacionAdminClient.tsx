@@ -37,6 +37,47 @@ export default function HabitacionAdminClient({ initialProducts, initialInfo }: 
     img_productos:    useRef<HTMLInputElement>(null),
   };
 
+  // Info section hero images
+  const INFO_IMG_SECTIONS = [
+    { key: "img_caja",      label: "Caja de Seguridad", fallback: "/images/login-bg.jpg" },
+    { key: "img_protocolo", label: "Protocolos",         fallback: "/images/login-bg.jpg" },
+    { key: "img_emergencia",label: "Emergencias",        fallback: "/images/login-bg.jpg" },
+  ] as const;
+  type InfoImgKey = typeof INFO_IMG_SECTIONS[number]["key"];
+  const getInfoImg = (key: InfoImgKey) => info.find(i => i.section === key)?.content ?? INFO_IMG_SECTIONS.find(s => s.key === key)!.fallback;
+  const [uploadingInfoImg, setUploadingInfoImg] = useState<InfoImgKey | null>(null);
+  const [savedInfoImg, setSavedInfoImg] = useState<InfoImgKey | null>(null);
+  const infoImgRefs = {
+    img_caja:       useRef<HTMLInputElement>(null),
+    img_protocolo:  useRef<HTMLInputElement>(null),
+    img_emergencia: useRef<HTMLInputElement>(null),
+  };
+
+  const handleInfoImgUpload = (key: InfoImgKey) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingInfoImg(key);
+    const fd = new FormData();
+    fd.append("file", file);
+    const upRes = await fetch("/api/admin/upload", { method: "POST", body: fd });
+    const upJson = await upRes.json();
+    if (!upJson.url) { setUploadingInfoImg(null); return; }
+    const url = upJson.url;
+    const lbl = INFO_IMG_SECTIONS.find(s => s.key === key)!.label;
+    const existing = info.find(i => i.section === key);
+    if (existing) {
+      await fetch("/api/admin/habitacion", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: existing.id, type: "info", section: key, title: lbl, content: url }) });
+      setInfo(s => s.map(x => x.id === existing.id ? { ...x, content: url } : x));
+    } else {
+      const res = await fetch("/api/admin/habitacion", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "info", section: key, title: lbl, content: url, order: 0 }) });
+      const json = await res.json();
+      setInfo(s => [...s, json.info]);
+    }
+    setUploadingInfoImg(null);
+    setSavedInfoImg(key);
+    setTimeout(() => setSavedInfoImg(null), 2500);
+  };
+
   const handleNavUpload = (key: NavKey) => async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -156,7 +197,7 @@ export default function HabitacionAdminClient({ initialProducts, initialInfo }: 
       </div>
 
       {/* ── Nav card images ── */}
-      <div className="mb-7">
+      <div className="mb-5">
         <h2 className="font-semibold text-gray-600 text-[13px] uppercase tracking-wide mb-3">Imágenes de Tarjetas</h2>
         <div className="flex flex-col gap-2">
           {NAV_SECTIONS.map(({ key, label }) => (
@@ -180,6 +221,36 @@ export default function HabitacionAdminClient({ initialProducts, initialInfo }: 
                 {uploadingNav === key ? "Subiendo..." : "Cambiar"}
               </button>
               <input ref={navFileRefs[key]} type="file" accept="image/*" className="hidden" onChange={handleNavUpload(key)} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Info section hero images ── */}
+      <div className="mb-7">
+        <h2 className="font-semibold text-gray-600 text-[13px] uppercase tracking-wide mb-3">Imágenes de Secciones de Información</h2>
+        <div className="flex flex-col gap-2">
+          {INFO_IMG_SECTIONS.map(({ key, label }) => (
+            <div key={key} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-4">
+              <div className="relative w-24 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
+                <Image src={getInfoImg(key)} alt={label} fill className="object-cover" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[13px] font-medium text-gray-800">{label}</p>
+                {savedInfoImg === key
+                  ? <p className="text-green-600 text-[11px] mt-0.5">✓ Imagen actualizada</p>
+                  : <p className="text-gray-400 text-[11px] mt-0.5">Hero de la sección en la app del huésped</p>}
+              </div>
+              <button
+                type="button"
+                onClick={() => infoImgRefs[key].current?.click()}
+                disabled={uploadingInfoImg === key}
+                className="flex items-center gap-1.5 bg-[#1B4332] text-white px-3 py-2 rounded-lg text-[12px] font-medium disabled:opacity-60 shrink-0"
+              >
+                {uploadingInfoImg === key ? <Loader2 size={13} className="animate-spin" /> : <ImagePlus size={13} />}
+                {uploadingInfoImg === key ? "Subiendo..." : "Cambiar"}
+              </button>
+              <input ref={infoImgRefs[key]} type="file" accept="image/*" className="hidden" onChange={handleInfoImgUpload(key)} />
             </div>
           ))}
         </div>
@@ -221,7 +292,7 @@ export default function HabitacionAdminClient({ initialProducts, initialInfo }: 
         </>
       ) : (
         <>
-          <button onClick={() => setEditingInfo({ section: "info", active: true })} className="flex items-center gap-2 bg-[#1B4332] text-white px-4 py-2 rounded-xl text-[13px] font-medium mb-5">
+          <button onClick={() => setEditingInfo({ section: "caja", active: true })} className="flex items-center gap-2 bg-[#1B4332] text-white px-4 py-2 rounded-xl text-[13px] font-medium mb-5">
             <Plus size={15} /> Agregar información
           </button>
           <div className="relative mb-5">
@@ -274,6 +345,13 @@ export default function HabitacionAdminClient({ initialProducts, initialInfo }: 
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
             <div className="flex justify-between mb-4"><h3 className="font-bold text-gray-900">Información</h3><button onClick={() => setEditingInfo(null)}><X size={18} className="text-gray-400" /></button></div>
             <div className="flex flex-col gap-3">
+              <div><label className="text-[12px] font-semibold text-gray-600 mb-1 block">Sección</label>
+                <select className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[14px]" value={editingInfo.section ?? "caja_seguridad"} onChange={e => setEditingInfo(p => ({ ...p!, section: e.target.value }))}>
+                  <option value="caja">Caja de Seguridad</option>
+                  <option value="protocolo">Protocolos</option>
+                  <option value="emergencia">Emergencias</option>
+                </select>
+              </div>
               {[{ key: "title", label: "Título" }, { key: "content", label: "Contenido", multi: true }].map(f => (
                 <div key={f.key}><label className="text-[12px] font-semibold text-gray-600 mb-1 block">{f.label}</label>
                   {f.multi ? <textarea rows={5} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[14px] resize-none" value={(editingInfo as Record<string, string | null | undefined | boolean>)[f.key] as string ?? ""} onChange={e => setEditingInfo(p => ({ ...p!, [f.key]: e.target.value }))} />

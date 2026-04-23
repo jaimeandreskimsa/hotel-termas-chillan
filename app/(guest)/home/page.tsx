@@ -94,6 +94,17 @@ function ActivityCard({ a }: { a: Activity }) {
   );
 }
 
+function getWelcome(name: string): string {
+  const first = name.trim().split(/\s+/)[0].toLowerCase();
+  const femaleEndings = ["a", "ia", "ina", "ela", "ela", "ila", "ara", "era", "ira", "ora", "ura"];
+  const femaleNames = ["luz", "paz", "sol", "mar", "flor", "pilar", "inés", "ines", "belen", "belen", "ruth", "edith", "judith", "naomi", "noemi", "leah", "lea"];
+  const maleNames = ["jose", "jorge", "jorge", "alex", "alexis", "elvis", "boris", "lucas", "matias", "nicolas", "andres", "carlos", "pablo", "daniel", "miguel", "angel", "samuel", "david", "juan", "pedro", "luis", "manuel", "roberto", "sergio", "oscar", "diego", "ivan", "ruben", "cesar", "hector", "victor"];
+  if (maleNames.includes(first)) return "Bienvenido";
+  if (femaleNames.includes(first)) return "Bienvenida";
+  if (femaleEndings.some(e => first.endsWith(e))) return "Bienvenida";
+  return "Bienvenido";
+}
+
 export default function HomePage() {
   const router = useRouter();
   const [guestName, setGuestName] = useState("Bienvenido/a");
@@ -147,7 +158,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 flex items-center justify-center pt-14">
           <h1 className="font-playfair text-white text-[32px] font-bold drop-shadow-lg leading-tight text-center">
-            Bienvenida,<br />{guestName}
+            {getWelcome(guestName)},<br />{guestName}
           </h1>
         </div>
       </div>

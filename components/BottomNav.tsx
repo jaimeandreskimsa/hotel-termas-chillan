@@ -2,15 +2,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface BottomNavProps {
-  guestName?: string;
-}
+interface BottomNavProps {}
 
-export default function BottomNav({ guestName }: BottomNavProps) {
+export default function BottomNav() {
   const pathname = usePathname();
-  const initials = guestName
-    ? guestName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
-    : "?";
 
   return (
     <nav
@@ -21,10 +16,10 @@ export default function BottomNav({ guestName }: BottomNavProps) {
         <i className="fi-ts-house-blank" style={{ fontSize: 22 }} />
       </Link>
 
-      {/* Center profile button */}
-      <Link href="/home" className="relative -top-4">
-        <div className="w-14 h-14 rounded-full bg-[#2D6A50] flex items-center justify-center shadow-lg border-4 border-[#1B4332]">
-          <span className="text-white font-bold text-lg">{initials}</span>
+      {/* Center add guest button */}
+      <Link href="/huespedes" className="relative -top-4">
+        <div className="w-14 h-14 rounded-full bg-[#D4722A] flex items-center justify-center shadow-lg border-4 border-[#1B4332]">
+          <span className="text-white font-bold text-[28px] leading-none">+</span>
         </div>
       </Link>
 

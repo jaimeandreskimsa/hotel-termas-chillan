@@ -11,8 +11,14 @@ type View =
   | { type: "home" }
   | { type: "housekeeping" }
   | { type: "info_menu" }
-  | { type: "info_detail"; item: InfoItem }
+  | { type: "info_detail"; section: string; label: string }
   | { type: "productos" };
+
+const INFO_SECTIONS = [
+  { key: "caja",      label: "Caja de Seguridad", emergency: false },
+  { key: "protocolo", label: "Protocolos",         emergency: false },
+  { key: "emergencia",label: "Emergencias",        emergency: true  },
+];
 
 const PRODUCT_CATS = ["Cuidado Personal e Higiene", "Bebés y Niños", "Electrónica y Accesorios", "Vestuario y Accesorios", "Piscina y Deporte"];
 
@@ -39,6 +45,7 @@ export default function HabitacionPage() {
   const [info, setInfo] = useState<InfoItem[]>([]);
   const [heroImg, setHeroImg] = useState("/images/habitacion.jpg");
   const [navImgs, setNavImgs] = useState({ img_housekeeping: "/images/habitacion.jpg", img_informacion: "/images/login-bg.jpg", img_productos: "/images/spa.jpg" });
+  const [infoImgs, setInfoImgs] = useState({ img_caja: "/images/login-bg.jpg", img_protocolo: "/images/login-bg.jpg", img_emergencia: "/images/login-bg.jpg" });
   const [activeProductCat, setActiveProductCat] = useState(PRODUCT_CATS[0]);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 
@@ -57,6 +64,14 @@ export default function HabitacionPage() {
         img_informacion:  inf?.content ?? "/images/login-bg.jpg",
         img_productos:    prod?.content ?? "/images/spa.jpg",
       });
+      const ic = items.find(i => i.section === "img_caja");
+      const ip = items.find(i => i.section === "img_protocolo");
+      const ie = items.find(i => i.section === "img_emergencia");
+      setInfoImgs({
+        img_caja:       ic?.content ?? "/images/login-bg.jpg",
+        img_protocolo:  ip?.content ?? "/images/login-bg.jpg",
+        img_emergencia: ie?.content ?? "/images/login-bg.jpg",
+      });
     });
   }, []);
 
@@ -65,10 +80,10 @@ export default function HabitacionPage() {
     else setView({ type: "home" });
   };
 
+
   const SYSTEM_SECTIONS = new Set(["hero_image", "housekeeping", "lavanderia", "img_housekeeping", "img_informacion", "img_productos"]);
   const housekeepingItems = info.filter(i => i.section === "housekeeping");
   const lavanderiaItems = info.filter(i => i.section === "lavanderia");
-  const infoMenuItems = info.filter(i => !SYSTEM_SECTIONS.has(i.section));
   const allProductCats = [...new Set(products.map(p => p.category))];
   const productsByCategory = products.reduce<Record<string, Product[]>>((acc, p) => {
     if (!acc[p.category]) acc[p.category] = [];
@@ -158,16 +173,12 @@ export default function HabitacionPage() {
         <div className="pt-14 pb-28 px-4">
           <h1 className="font-playfair text-[#3D2B1F] text-[32px] font-bold mt-6 mb-6">Información</h1>
           <div className="flex flex-col gap-3">
-            {infoMenuItems.map(item => {
-              const isEmergencia = item.section === "emergencia";
-              return (
-                <button key={item.id} onClick={() => setView({ type: "info_detail", item })} className={`flex justify-between items-center px-4 py-4 rounded-xl text-left shadow-sm ${isEmergencia ? "bg-[#D4722A]" : "bg-white border border-[#EDE6D8]"}`}>
-                  <span className={`text-[15px] font-medium ${isEmergencia ? "text-white" : "text-[#3D2B1F]"}`}>{item.title}</span>
-                  <ChevronRight size={18} className={isEmergencia ? "text-white" : "text-[#9B9280]"} />
-                </button>
-              );
-            })}
-            {infoMenuItems.length === 0 && <p className="text-[#9B9280] text-center py-10 text-[14px]">Sin información disponible.</p>}
+            {INFO_SECTIONS.map(sec => (
+              <button key={sec.key} onClick={() => setView({ type: "info_detail", section: sec.key, label: sec.label })} className={`flex justify-between items-center px-4 py-4 rounded-xl text-left shadow-sm ${sec.emergency ? "bg-[#D4722A]" : "bg-white border border-[#EDE6D8]"}`}>
+                <span className={`text-[15px] font-medium ${sec.emergency ? "text-white" : "text-[#3D2B1F]"}`}>{sec.label}</span>
+                <ChevronRight size={18} className={sec.emergency ? "text-white" : "text-[#9B9280]"} />
+              </button>
+            ))}
           </div>
           <button onClick={goBack} className="flex items-center gap-1.5 bg-[#1B4332] text-white px-5 py-2 rounded-full text-[13px] font-medium mx-auto mt-7">
             <ChevronLeft size={15} /> Volver
@@ -180,24 +191,34 @@ export default function HabitacionPage() {
 
   // ── INFO DETAIL ───────────────────────────────────────────────────────
   if (view.type === "info_detail") {
-    const item = view.item;
-    const isEmergencia = item.section === "emergencia";
+    const { section, label } = view;
+    const isEmergencia = section === "emergencia";
+    const sectionItems = info.filter(i => i.section === section);
+    const sectionImgKey = section === "caja" ? "img_caja" : section === "protocolo" ? "img_protocolo" : "img_emergencia";
+    const sectionHeroImg = infoImgs[sectionImgKey as keyof typeof infoImgs];
     return (
       <div className="min-h-svh bg-[#F5F0E8]">
         <Header />
         <div className="pt-14 pb-28">
-          {isEmergencia ? (
-            <div className="relative w-full h-44 rounded-b-3xl bg-[#D4722A] flex items-end p-5">
-              <h1 className="font-playfair text-white text-[32px] font-bold drop-shadow-lg">{item.title}</h1>
-              <button onClick={goBack} className="absolute top-4 left-4 bg-white/90 text-[#D4722A] px-3 py-1.5 rounded-full text-[13px] font-semibold flex items-center gap-1 shadow-sm">
-                <ChevronLeft size={14} /> Volver
-              </button>
-            </div>
-          ) : (
-            <SubHero title={item.title} imageSrc="/images/login-bg.jpg" onBack={goBack} />
-          )}
+          <SubHero
+            title={label}
+            imageSrc={sectionHeroImg}
+            accentColor={isEmergencia ? "bg-[#D4722A]" : undefined}
+            onBack={goBack}
+          />
           <div className="px-4 py-5">
-            <p className="text-[#6B6B6B] text-[13px] leading-relaxed whitespace-pre-line">{item.content}</p>
+            {sectionItems.length > 0 ? (
+              <div className="flex flex-col gap-5">
+                {sectionItems.map(item => (
+                  <div key={item.id}>
+                    <h3 className="font-semibold text-[#1B4332] text-[15px] mb-1">{item.title}</h3>
+                    <p className="text-[#6B6B6B] text-[13px] leading-relaxed whitespace-pre-line">{item.content}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[#9B9280] text-center py-10 text-[14px]">Sin información disponible aún.</p>
+            )}
           </div>
         </div>
         <BottomNav />
