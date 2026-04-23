@@ -26,6 +26,7 @@ const CATEGORY_ORDER_INVIERNO = [
   "Deportes de Nieve",
   "Exploración y Naturaleza",
   "Bienestar y Talleres Indoor",
+  "Otras Actividades",
 ];
 
 const CAT_FALLBACKS: Record<string, string> = {
