@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poltawski_Nowy } from "next/font/google";
+import InstallPrompt from "@/components/InstallPrompt";
 import "@fontsource/cooper-hewitt/400.css";
 import "@fontsource/cooper-hewitt/600.css";
 import "@fontsource/cooper-hewitt/700.css";
@@ -49,6 +50,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="/uicons/uicons-bold-straight.css" />
       </head>
       <body className="antialiased">
+        <InstallPrompt />
         {children}
       </body>
     </html>
