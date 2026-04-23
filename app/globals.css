@@ -1,26 +1,122 @@
 @import "tailwindcss";
 
+/* Flaticon Uicons – @font-face registrado en bundle principal */
+@font-face {
+  font-family: "uicons-thin-straight";
+  src: url("/uicons/webfonts/uicons-thin-straight.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "uicons-regular-straight";
+  src: url("/uicons/webfonts/uicons-regular-straight.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "uicons-bold-straight";
+  src: url("/uicons/webfonts/uicons-bold-straight.woff2") format("woff2");
+  font-display: swap;
+}
+
+i[class^="fi-ts-"]::before, i[class*=" fi-ts-"]::before,
+span[class^="fi-ts-"]::before, span[class*=" fi-ts-"]::before {
+  font-family: "uicons-thin-straight" !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+}
+
+i[class^="fi-rs-"]::before, i[class*=" fi-rs-"]::before,
+span[class^="fi-rs-"]::before, span[class*=" fi-rs-"]::before {
+  font-family: "uicons-regular-straight" !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+}
+
+i[class^="fi-bs-"]::before, i[class*=" fi-bs-"]::before,
+span[class^="fi-bs-"]::before, span[class*=" fi-bs-"]::before {
+  font-family: "uicons-bold-straight" !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --green-primary: #1B4332;
+  --green-dark: #13311F;
+  --green-medium: #2D6A4F;
+  --green-light: #52B788;
+  --cream: #F5F0E8;
+  --cream-light: #FFFDF6;
+  --cream-dark: #EDE6D8;
+  --cream-border: #E0D8CC;
+  --brown-text: #3D2B1F;
+  --brown-muted: #7B6354;
+  --alert: #D4722A;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-playfair: "Poltawski Nowy", Georgia, serif;
+  --font-inter: "Cooper Hewitt", system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    background-color: #1B4332;
+    background-image: url('/images/login-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 100svh;
+    display: flex;
+    justify-content: center;
+  }
+
+  body {
+    font-family: "Cooper Hewitt", system-ui, sans-serif;
+    font-size: 18px;
+    background-color: #F5F0E8;
+    color: #1a1a1a;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100svh;
+    box-shadow: 0 0 60px rgba(0,0,0,0.4);
+  }
+
+  /* Admin panel: full width, no mobile constraints */
+  body:has(.admin-shell) {
+    max-width: 100%;
+    margin: 0;
+    background-color: #f9fafb;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .font-playfair {
+    font-family: "Poltawski Nowy", Georgia, serif;
+  }
+
+  .page-pb {
+    padding-bottom: 88px;
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }

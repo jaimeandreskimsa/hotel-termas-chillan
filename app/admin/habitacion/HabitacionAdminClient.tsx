@@ -1,0 +1,293 @@
+"use client";
+import { useRef, useState } from "react";
+import { Pencil, Trash2, Plus, X, Save, ImagePlus, Loader2, Search } from "lucide-react";
+import Image from "next/image";
+
+interface Product { id: number; category: string; name: string; price: string | null; active: boolean; }
+interface InfoItem { id: number; section: string; title: string; content: string; active: boolean; }
+interface HeroInfo { id?: number; content: string; }
+
+const PRODUCT_CATS = ["Cuidado Personal e Higiene", "Bebés y Niños", "Electrónica y Accesorios", "Vestuario y Accesorios", "Piscina y Deporte"];
+
+export default function HabitacionAdminClient({ initialProducts, initialInfo }: { initialProducts: Product[]; initialInfo: InfoItem[] }) {
+  const [tab, setTab] = useState<"products" | "info">("products");
+  const [products, setProducts] = useState(initialProducts);
+  const [info, setInfo] = useState(initialInfo);
+
+  // Hero image
+  const heroRecord = initialInfo.find(i => i.section === "hero_image");
+  const [heroImg, setHeroImg] = useState<string>(heroRecord?.content ?? "/images/habitacion.jpg");
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const [heroSaved, setHeroSaved] = useState(false);
+  const heroFileRef = useRef<HTMLInputElement>(null);
+
+  // Nav card images
+  const NAV_SECTIONS = [
+    { key: "img_housekeeping", label: "Housekeeping", fallback: "/images/habitacion.jpg" },
+    { key: "img_informacion",  label: "Información",  fallback: "/images/login-bg.jpg" },
+    { key: "img_productos",    label: "Productos",    fallback: "/images/spa.jpg" },
+  ] as const;
+  type NavKey = typeof NAV_SECTIONS[number]["key"];
+  const getNavImg = (key: NavKey) => info.find(i => i.section === key)?.content ?? NAV_SECTIONS.find(s => s.key === key)!.fallback;
+  const [uploadingNav, setUploadingNav] = useState<NavKey | null>(null);
+  const [savedNav, setSavedNav] = useState<NavKey | null>(null);
+  const navFileRefs = {
+    img_housekeeping: useRef<HTMLInputElement>(null),
+    img_informacion:  useRef<HTMLInputElement>(null),
+    img_productos:    useRef<HTMLInputElement>(null),
+  };
+
+  const handleNavUpload = (key: NavKey) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingNav(key);
+    const fd = new FormData();
+    fd.append("file", file);
+    const upRes = await fetch("/api/admin/upload", { method: "POST", body: fd });
+    const upJson = await upRes.json();
+    if (!upJson.url) { setUploadingNav(null); return; }
+    const url = upJson.url;
+    const label = NAV_SECTIONS.find(s => s.key === key)!.label;
+    const existing = info.find(i => i.section === key);
+    if (existing) {
+      await fetch("/api/admin/habitacion", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: existing.id, type: "info", section: key, title: label, content: url }) });
+      setInfo(s => s.map(x => x.id === existing.id ? { ...x, content: url } : x));
+    } else {
+      const res = await fetch("/api/admin/habitacion", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "info", section: key, title: label, content: url, order: 0 }) });
+      const json = await res.json();
+      setInfo(s => [...s, json.info]);
+    }
+    setUploadingNav(null);
+    setSavedNav(key);
+    setTimeout(() => setSavedNav(null), 2500);
+  };
+
+  const handleHeroUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingHero(true);
+    const fd = new FormData();
+    fd.append("file", file);
+    const upRes = await fetch("/api/admin/upload", { method: "POST", body: fd });
+    const upJson = await upRes.json();
+    if (!upJson.url) { setUploadingHero(false); return; }
+    const url = upJson.url;
+    if (heroRecord) {
+      await fetch("/api/admin/habitacion", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: heroRecord.id, type: "info", section: "hero_image", title: "Hero Imagen", content: url }) });
+      setInfo(s => s.map(x => x.id === heroRecord.id ? { ...x, content: url } : x));
+    } else {
+      const res = await fetch("/api/admin/habitacion", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "info", section: "hero_image", title: "Hero Imagen", content: url, order: 0 }) });
+      const json = await res.json();
+      setInfo(s => [...s, json.info]);
+    }
+    setHeroImg(url);
+    setUploadingHero(false);
+    setHeroSaved(true);
+    setTimeout(() => setHeroSaved(false), 2500);
+  };
+  const [editingProduct, setEditingProduct] = useState<Partial<Product> | null>(null);
+  const [editingInfo, setEditingInfo] = useState<Partial<InfoItem> | null>(null);
+  const [query, setQuery] = useState("");
+
+  const byCategory = products.reduce<Record<string, Product[]>>((acc, p) => {
+    if (!acc[p.category]) acc[p.category] = [];
+    acc[p.category].push(p);
+    return acc;
+  }, {});
+
+  const saveProduct = async (data: Partial<Product>) => {
+    const isNew = !data.id;
+    const res = await fetch("/api/admin/habitacion", { method: isNew ? "POST" : "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, type: "product" }) });
+    const json = await res.json();
+    if (isNew) setProducts(s => [...s, json.product]);
+    else setProducts(s => s.map(x => x.id === json.product.id ? json.product : x));
+    setEditingProduct(null);
+  };
+
+  const saveInfo = async (data: Partial<InfoItem>) => {
+    const isNew = !data.id;
+    const res = await fetch("/api/admin/habitacion", { method: isNew ? "POST" : "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, type: "info" }) });
+    const json = await res.json();
+    if (isNew) setInfo(s => [...s, json.info]);
+    else setInfo(s => s.map(x => x.id === json.info.id ? json.info : x));
+    setEditingInfo(null);
+  };
+
+  const deleteProduct = async (id: number) => {
+    if (!confirm("¿Eliminar?")) return;
+    await fetch("/api/admin/habitacion", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, type: "product" }) });
+    setProducts(s => s.filter(x => x.id !== id));
+  };
+
+  const deleteInfo = async (id: number) => {
+    if (!confirm("¿Eliminar?")) return;
+    await fetch("/api/admin/habitacion", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, type: "info" }) });
+    setInfo(s => s.filter(x => x.id !== id));
+  };
+
+  return (
+    <div className="p-6">
+      <h1 className="text-[22px] font-bold text-gray-900 mb-6">Mi Habitación</h1>
+
+      {/* ── Hero image ── */}
+      <div className="mb-5">
+        <h2 className="font-semibold text-gray-600 text-[13px] uppercase tracking-wide mb-3">Imagen Hero</h2>
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-4">
+          <div className="relative w-24 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
+            <Image src={heroImg} alt="Hero" fill className="object-cover" />
+          </div>
+          <div className="flex-1">
+            <p className="text-[13px] font-medium text-gray-800">Foto principal de Mi Habitación</p>
+            {heroSaved
+              ? <p className="text-green-600 text-[11px] mt-0.5">✓ Imagen actualizada</p>
+              : <p className="text-gray-400 text-[11px] mt-0.5">Se muestra como hero en la app del huésped</p>}
+          </div>
+          <button
+            type="button"
+            onClick={() => heroFileRef.current?.click()}
+            disabled={uploadingHero}
+            className="flex items-center gap-1.5 bg-[#1B4332] text-white px-3 py-2 rounded-lg text-[12px] font-medium disabled:opacity-60 shrink-0"
+          >
+            {uploadingHero ? <Loader2 size={13} className="animate-spin" /> : <ImagePlus size={13} />}
+            {uploadingHero ? "Subiendo..." : "Cambiar"}
+          </button>
+          <input ref={heroFileRef} type="file" accept="image/*" className="hidden" onChange={handleHeroUpload} />
+        </div>
+      </div>
+
+      {/* ── Nav card images ── */}
+      <div className="mb-7">
+        <h2 className="font-semibold text-gray-600 text-[13px] uppercase tracking-wide mb-3">Imágenes de Tarjetas</h2>
+        <div className="flex flex-col gap-2">
+          {NAV_SECTIONS.map(({ key, label }) => (
+            <div key={key} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-4">
+              <div className="relative w-24 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
+                <Image src={getNavImg(key)} alt={label} fill className="object-cover" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[13px] font-medium text-gray-800">{label}</p>
+                {savedNav === key
+                  ? <p className="text-green-600 text-[11px] mt-0.5">✓ Imagen actualizada</p>
+                  : <p className="text-gray-400 text-[11px] mt-0.5">Tarjeta en pantalla Mi Habitación</p>}
+              </div>
+              <button
+                type="button"
+                onClick={() => navFileRefs[key].current?.click()}
+                disabled={uploadingNav === key}
+                className="flex items-center gap-1.5 bg-[#1B4332] text-white px-3 py-2 rounded-lg text-[12px] font-medium disabled:opacity-60 shrink-0"
+              >
+                {uploadingNav === key ? <Loader2 size={13} className="animate-spin" /> : <ImagePlus size={13} />}
+                {uploadingNav === key ? "Subiendo..." : "Cambiar"}
+              </button>
+              <input ref={navFileRefs[key]} type="file" accept="image/*" className="hidden" onChange={handleNavUpload(key)} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex gap-2 mb-6">
+        {[{ k: "products", l: "Productos" }, { k: "info", l: "Información" }].map(t => (
+          <button key={t.k} onClick={() => setTab(t.k as typeof tab)} className={`px-5 py-2 rounded-full text-[13px] font-semibold transition-all ${tab === t.k ? "bg-[#1B4332] text-white" : "bg-white border border-gray-200 text-gray-600"}`}>{t.l}</button>
+        ))}
+      </div>
+
+      {tab === "products" ? (
+        <>
+          <button onClick={() => setEditingProduct({ category: PRODUCT_CATS[0], active: true })} className="flex items-center gap-2 bg-[#1B4332] text-white px-4 py-2 rounded-xl text-[13px] font-medium mb-5">
+            <Plus size={15} /> Agregar producto
+          </button>
+          <div className="relative mb-5">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Buscar producto..." className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#1B4332] bg-white" />
+          </div>
+          {Object.entries(byCategory).map(([cat, items]) => {
+            const vis = query ? items.filter(p => p.name.toLowerCase().includes(query.toLowerCase())) : items;
+            if (vis.length === 0) return null;
+            return (
+            <div key={cat} className="mb-5">
+              <h2 className="font-semibold text-gray-600 text-[12px] uppercase tracking-wide mb-2">{cat}</h2>
+              {vis.map(p => (
+                <div key={p.id} className="bg-white rounded-xl px-4 py-3 border border-gray-100 shadow-sm flex justify-between items-center mb-1.5">
+                  <div><span className="text-[14px] font-medium text-gray-900">{p.name}</span>{p.price && <span className="ml-3 text-[#1B4332] font-semibold text-[13px]">{p.price}</span>}</div>
+                  <div className="flex gap-2">
+                    <button onClick={() => setEditingProduct(p)} className="p-1.5 text-gray-400 hover:text-gray-700"><Pencil size={13} /></button>
+                    <button onClick={() => deleteProduct(p.id)} className="p-1.5 text-gray-400 hover:text-red-500"><Trash2 size={13} /></button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            );
+          })}
+        </>
+      ) : (
+        <>
+          <button onClick={() => setEditingInfo({ section: "info", active: true })} className="flex items-center gap-2 bg-[#1B4332] text-white px-4 py-2 rounded-xl text-[13px] font-medium mb-5">
+            <Plus size={15} /> Agregar información
+          </button>
+          <div className="relative mb-5">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Buscar información..." className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-[14px] outline-none focus:border-[#1B4332] bg-white" />
+          </div>
+          {info.filter(i => i.section !== "hero_image" && (!query || i.title.toLowerCase().includes(query.toLowerCase()))).map(item => (
+            <div key={item.id} className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm mb-3 flex justify-between gap-3">
+              <div className="flex-1">
+                <p className="font-semibold text-gray-900 text-[14px]">{item.title}</p>
+                <p className="text-gray-400 text-[12px] mt-0.5 line-clamp-3 whitespace-pre-line">{item.content}</p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <button onClick={() => setEditingInfo(item)} className="p-1.5 text-gray-400 hover:text-gray-700"><Pencil size={13} /></button>
+                <button onClick={() => deleteInfo(item.id)} className="p-1.5 text-gray-400 hover:text-red-500"><Trash2 size={13} /></button>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+
+      {/* Product modal */}
+      {editingProduct && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+            <div className="flex justify-between mb-4"><h3 className="font-bold text-gray-900">Producto</h3><button onClick={() => setEditingProduct(null)}><X size={18} className="text-gray-400" /></button></div>
+            <div className="flex flex-col gap-3">
+              <div><label className="text-[12px] font-semibold text-gray-600 mb-1 block">Categoría</label>
+                <select className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[14px]" value={editingProduct.category ?? ""} onChange={e => setEditingProduct(p => ({ ...p!, category: e.target.value }))}>
+                  {PRODUCT_CATS.map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              {[{ key: "name", label: "Nombre" }, { key: "price", label: "Precio" }].map(f => (
+                <div key={f.key}><label className="text-[12px] font-semibold text-gray-600 mb-1 block">{f.label}</label>
+                  <input className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[14px]" value={(editingProduct as Record<string, string | null | undefined | boolean>)[f.key] as string ?? ""} onChange={e => setEditingProduct(p => ({ ...p!, [f.key]: e.target.value }))} />
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-3 mt-5">
+              <button onClick={() => setEditingProduct(null)} className="flex-1 border border-gray-200 rounded-xl py-2.5 text-[14px] text-gray-600">Cancelar</button>
+              <button onClick={() => saveProduct(editingProduct)} className="flex-1 bg-[#1B4332] text-white rounded-xl py-2.5 text-[14px] font-medium flex items-center justify-center gap-2"><Save size={14} /> Guardar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Info modal */}
+      {editingInfo && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+            <div className="flex justify-between mb-4"><h3 className="font-bold text-gray-900">Información</h3><button onClick={() => setEditingInfo(null)}><X size={18} className="text-gray-400" /></button></div>
+            <div className="flex flex-col gap-3">
+              {[{ key: "title", label: "Título" }, { key: "content", label: "Contenido", multi: true }].map(f => (
+                <div key={f.key}><label className="text-[12px] font-semibold text-gray-600 mb-1 block">{f.label}</label>
+                  {f.multi ? <textarea rows={5} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[14px] resize-none" value={(editingInfo as Record<string, string | null | undefined | boolean>)[f.key] as string ?? ""} onChange={e => setEditingInfo(p => ({ ...p!, [f.key]: e.target.value }))} />
+                  : <input className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[14px]" value={(editingInfo as Record<string, string | null | undefined | boolean>)[f.key] as string ?? ""} onChange={e => setEditingInfo(p => ({ ...p!, [f.key]: e.target.value }))} />}
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-3 mt-5">
+              <button onClick={() => setEditingInfo(null)} className="flex-1 border border-gray-200 rounded-xl py-2.5 text-[14px] text-gray-600">Cancelar</button>
+              <button onClick={() => saveInfo(editingInfo)} className="flex-1 bg-[#1B4332] text-white rounded-xl py-2.5 text-[14px] font-medium flex items-center justify-center gap-2"><Save size={14} /> Guardar</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
