@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { activities } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { logAction } from "@/lib/logger";
+import { autoTranslate } from "@/lib/deepl";
 
 async function getSession() {
   const session = await auth();
@@ -18,7 +19,8 @@ export async function POST(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json();
-  const [activity] = await db.insert(activities).values({ season: body.season, category: body.category, name: body.name, description: body.description, price: body.price, image: body.image ?? null, order: body.order ?? 99 }).returning();
+  const translations = await autoTranslate({ name: body.name, description: body.description });
+  const [activity] = await db.insert(activities).values({ season: body.season, category: body.category, name: body.name, description: body.description, price: body.price, image: body.image ?? null, order: body.order ?? 99, translations }).returning();
   await logAction({ type: "admin", action: "create_activity", module: "actividades", actorName: session.user?.name, actorEmail: session.user?.email, details: `Creó actividad: ${body.name} (${body.season})` });
   return NextResponse.json({ activity });
 }
@@ -27,7 +29,8 @@ export async function PATCH(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json();
-  const [activity] = await db.update(activities).set({ season: body.season, category: body.category, name: body.name, description: body.description, price: body.price, image: body.image ?? null }).where(eq(activities.id, body.id)).returning();
+  const translations = await autoTranslate({ name: body.name, description: body.description });
+  const [activity] = await db.update(activities).set({ season: body.season, category: body.category, name: body.name, description: body.description, price: body.price, image: body.image ?? null, translations }).where(eq(activities.id, body.id)).returning();
   await logAction({ type: "admin", action: "update_activity", module: "actividades", actorName: session.user?.name, actorEmail: session.user?.email, details: `Actualizó actividad: ${body.name}` });
   return NextResponse.json({ activity });
 }

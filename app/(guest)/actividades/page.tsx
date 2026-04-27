@@ -177,91 +177,96 @@ export default function ActividadesPage() {
       <Header />
 
       <div className="pt-14">
+
         {!selectedCat ? (
           /* ── Category list ── */
           <div className="flex flex-col">
-            {/* Season toggle */}
-            <div className="flex bg-[#1B4332] gap-2 px-4 py-3">
-              {(["verano", "invierno"] as const).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => { setSeason(s); setSelectedCat(null); }}
-                  className={`flex-1 py-2 rounded-full text-[13px] font-semibold transition-all ${
-                    season === s ? "bg-white text-[#1B4332]" : "text-white border border-white/40"
-                  }`}
-                >
-                  {s === "verano" ? "☀️ Verano" : "⛷️ Invierno"}
-                </button>
-              ))}
-            </div>
-          <div className="px-5 py-6">
-            <h1 className="font-playfair text-[#1B4332] text-[32px] font-bold text-center mb-6">
+          {/* Season toggle */}
+          <div className="flex gap-2 px-4 pt-8 pb-3 bg-[#F5F0E8]">
+            {(["verano", "invierno"] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => { setSeason(s); setSelectedCat(null); }}
+                className={`flex-1 py-2 rounded-full transition-all border font-playfair font-bold text-center ${
+                  season === s ? "bg-[#1B4332] text-white border-[#1B4332]" : "text-[#1B4332] border-[#1B4332]/40 bg-transparent"
+                }`}
+                style={{ fontSize: 24, lineHeight: 1 }}
+              >
+                {s === "verano" ? "Verano" : "Invierno"}
+              </button>
+            ))}
+          </div>
+          <div className="px-5 py-6 md:max-w-3xl md:mx-auto">
+            <h1 className="font-playfair font-bold text-center mb-6" style={{ fontSize: 40, lineHeight: 1, color: '#54432B' }}>
               Experiencias y Actividades
             </h1>
             {allCategories.length === 0 && activities.length === 0 && (
               <p className="text-[#9B9280] text-center py-10 text-[14px]">Cargando actividades…</p>
             )}
             {allCategories.length > 0 && (
-              <div className="flex flex-col gap-5 pb-28">
+              <div className="flex flex-col items-center gap-[46px] pb-6">
                 {allCategories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCat(cat)}
-                    className="relative w-full rounded-2xl overflow-hidden shadow-card active:scale-[0.98] transition-transform"
-                    style={{ height: 114 }}
+                    className="relative rounded-3xl overflow-hidden shadow-md active:scale-[0.98] transition-transform card-enter"
+                    style={{ width: 382, height: 114 }}
                   >
                     <img src={getCatImg(cat)} alt={cat} className="absolute inset-0 w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <span className="font-playfair text-white text-2xl font-bold">{cat}</span>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="font-playfair font-bold text-center" style={{ fontSize: 24, lineHeight: 1, color: 'white' }}>{cat}</span>
                     </div>
                   </button>
                 ))}
+                <button onClick={() => window.history.back()} className="bg-[#1B4332] text-white px-6 py-2 rounded-full text-[14px] font-semibold active:opacity-80 mb-20">Volver</button>
               </div>
             )}
           </div>
           </div>
         ) : (
           /* ── Category detail ── */
-          <div className="pb-24">
+          <div className="pb-24 md:pb-12 md:max-w-4xl md:mx-auto">
             {/* Hero */}
-            <div className="relative h-[240px] w-full rounded-b-3xl overflow-hidden">
+            <div className="relative overflow-hidden" style={{ width: '100%', height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
               <img
                 src={getCatImg(selectedCat)}
                 alt={selectedCat}
                 className="absolute inset-0 w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/25 to-black/70" />
-              {/* Volver button */}
-              <button
-                onClick={() => setSelectedCat(null)}
-                className="absolute top-4 left-4 flex items-center gap-1.5 bg-[#1B4332] text-white rounded-full px-4 py-2 text-[13px] font-semibold shadow-lg"
-              >
-                <i className="fi-rs-angle-left" style={{ fontSize: 13 }} />
-                Volver
-              </button>
-              {/* Category title */}
-              <div className="absolute bottom-5 left-0 right-0 px-6 text-center">
-                <h2 className="font-playfair text-white text-[28px] font-bold leading-tight drop-shadow-lg">
+              <div className="absolute inset-0 bg-black/40" />
+              {/* Category title centered */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <h2 className="font-playfair font-bold text-center drop-shadow-lg" style={{ fontSize: 40, lineHeight: 1, color: 'white' }}>
                   {selectedCat}
                 </h2>
+              </div>
+              {/* Volver button bottom center */}
+              <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+                <button onClick={() => setSelectedCat(null)} className="bg-[#1B4332] text-white text-[14px] font-semibold px-6 py-2 rounded-full active:opacity-80">Volver</button>
               </div>
             </div>
 
             <div className="pt-2">
+              {selectedCat === "Caminatas y Trekkings" && (
+                <div className="px-5 pt-4 pb-2 text-center">
+                  <p className="text-[#3D2B1F] text-[14px] leading-relaxed">Exploración del entorno natural. Snacks incluidos y cocktail en salidas de puesta de sol.</p>
+                  <p className="text-[#9B9280] text-[13px] mt-2">Para más información, acércate al mesón de recepción</p>
+                </div>
+              )}
               {catActivities.length === 0 ? (
                 <p className="text-[#9B9280] text-center py-10 text-[14px] px-4">Próximamente actividades disponibles</p>
               ) : isOtras ? (
                 <>
                   {freeActs.length > 0 && (
                     <>
-                      <h3 className="font-playfair text-[#1B4332] text-[17px] font-bold px-4 mt-4 mb-1">Actividades Gratuitas</h3>
+                      <h3 className="font-playfair font-bold text-center px-4 mt-4 mb-1" style={{ fontSize: 40, lineHeight: 1, color: '#54432B' }}>Actividades Gratuitas</h3>
                       <ActivitySlider activities={freeActs} catImage={getCatImg(selectedCat)} />
                     </>
                   )}
                   {paidActs.length > 0 && (
                     <>
-                      <h3 className="font-playfair text-[#1B4332] text-[17px] font-bold px-4 mt-4 mb-1">Actividades con Costo Extra</h3>
+                      <h3 className="font-playfair font-bold text-center px-4 mt-4 mb-1" style={{ fontSize: 40, lineHeight: 1, color: '#54432B' }}>Actividades con Costo Extra</h3>
                       <ActivitySlider activities={paidActs} catImage={getCatImg(selectedCat)} />
                     </>
                   )}
@@ -271,15 +276,10 @@ export default function ActividadesPage() {
               )}
             </div>
 
-            {/* Volver bottom */}
-            <div className="px-4 mt-4">
-              <button
-                onClick={() => setSelectedCat(null)}
-                className="w-full py-3 rounded-full border-2 border-[#1B4332] text-[#1B4332] font-semibold text-[14px] active:bg-[#1B4332] active:text-white transition-colors flex items-center justify-center gap-2"
-              >
-                <i className="fi-rs-angle-left" style={{ fontSize: 13 }} />
-                Volver a Actividades
-              </button>
+            <div className="px-5 mt-6 mb-8 text-center">
+              <p style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontWeight: 700, fontSize: 16, lineHeight: 1, color: '#DB7C59', textAlign: 'center' }}>
+                Las actividades full day son operadas por proveedor externo y tienen costo adicional.
+              </p>
             </div>
           </div>
         )}

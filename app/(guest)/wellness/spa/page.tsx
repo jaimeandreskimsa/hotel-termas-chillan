@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
 
 interface SpaService { id: number; category: string; name: string; description: string | null; duration: string | null; price: string | null; }
@@ -11,7 +11,6 @@ const CATEGORIES = ["Masajes y Terapias", "Rituales de Renovación", "Faciales y
 
 export default function SpaPage() {
   const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
   const [services, setServices] = useState<SpaService[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -30,91 +29,57 @@ export default function SpaPage() {
 
   return (
     <div className="min-h-svh bg-[#F5F0E8]">
-      {/* Header con tabs integrados */}
-      <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-50 bg-[#1B4332]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.18)" }}>
-        {/* Top bar */}
-        <div className="flex items-center justify-between px-4 py-3">
-          <Link href="/home">
-            <img src="/images/logo.png" alt="Hotel Termas de Chillán" className="h-10 object-contain" />
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5">
-              <span className="text-lg">🇨🇱</span>
-              <span className="text-white text-xs font-semibold tracking-wide">ESP</span>
-            </div>
-            <button onClick={() => setMenuOpen(true)} className="text-white p-1" aria-label="Abrir menú">
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="5" width="18" height="1.8" rx="0.9" fill="white"/>
-                <rect x="2" y="10.1" width="18" height="1.8" rx="0.9" fill="white"/>
-                <rect x="2" y="15.2" width="18" height="1.8" rx="0.9" fill="white"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-        {/* Category tabs */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar px-3 pb-3">
+      <Header />
+
+      {/* Category tabs — fixed on mobile, static below hero on desktop */}
+      <div className="fixed md:hidden top-[64px] left-0 right-0 z-40 bg-[#1B4332]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar px-3 py-2">
           {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all whitespace-nowrap ${activeCategory === cat ? "bg-white text-[#1B4332]" : "text-white/80"}`}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all whitespace-nowrap ${activeCategory === cat ? "bg-white text-[#1B4332]" : "text-white/80 hover:text-white"}`}
             >
               {cat}
             </button>
           ))}
         </div>
-      </header>
+      </div>
 
-      {/* Top dropdown menu */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-[100]">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMenuOpen(false)} />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-[#1B4332] flex flex-col rounded-b-3xl overflow-hidden shadow-2xl">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-white/15">
-              <img src="/images/logo.png" alt="Hotel Termas de Chillán" className="h-10 w-auto object-contain" />
-              <button onClick={() => setMenuOpen(false)} className="text-white p-1">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="4" y1="4" x2="20" y2="20" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                  <line x1="20" y1="4" x2="4" y2="20" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              </button>
-            </div>
-            <nav>
-              {[
-                { href: "/home",         label: "Inicio",                       iconClass: "fi-ts-house-blank" },
-                { href: "/habitacion",   label: "Mi habitación",                iconClass: "fi-ts-bed-alt" },
-                { href: "/restaurantes", label: "Comer y Beber",                iconClass: "fi-ts-utensils" },
-                { href: "/actividades",  label: "Experiencias",                 iconClass: "fi-ts-mountain" },
-                { href: "/wellness",     label: "Wellness & Spa",               iconClass: "fi-ts-hot-tub" },
-                { href: "/familia",      label: "Familia y Niños",              iconClass: "fi-ts-family" },
-                { href: "/emergencia",   label: "Contacto de Emergencia",       iconClass: "fi-rs-phone-call" },
-              ].map(item => (
-                <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="flex items-center gap-5 px-6 py-[18px] border-b border-white/15 active:bg-white/10">
-                  <i className={`${item.iconClass} text-white shrink-0`} style={{ fontSize: 22 }} />
-                  <span className="text-white font-playfair text-[20px]">{item.label}</span>
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
-      )}
-
-      {/* Hero con curva en la parte inferior */}
-      <div className="pt-[104px]">
-        <div className="relative overflow-hidden h-[378px] shadow-lg rounded-b-3xl">
+      {/* Hero */}
+      <div className="pt-[104px] md:pt-[64px]">
+        <div className="relative overflow-hidden shadow-lg md:rounded-none" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url('${heroImg}')` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-          <div className="absolute bottom-5 left-6">
-            <h1 className="font-playfair text-white text-[32px] font-bold drop-shadow">Spa Alunco</h1>
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h1 className="font-playfair text-white font-bold text-center drop-shadow-lg" style={{ fontSize: 40, lineHeight: 1 }}>Spa Alunco</h1>
+          </div>
+          <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+            <button onClick={() => router.back()} className="bg-[#1B4332] text-white text-[14px] font-semibold px-6 py-2 rounded-full active:opacity-80">Volver</button>
           </div>
         </div>
       </div>
 
+      {/* Category tabs — desktop only, below hero */}
+      <div className="hidden md:block bg-[#1B4332]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar px-6 py-3 max-w-7xl mx-auto">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold transition-all whitespace-nowrap ${activeCategory === cat ? "bg-white text-[#1B4332]" : "text-white/80 hover:text-white hover:bg-white/10"}`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Contenido */}
-      <div className="px-4 py-5 pb-24 flex flex-col gap-4">
+      <div className="px-4 py-5 pb-24 md:pb-12 flex flex-col gap-4 md:max-w-3xl md:mx-auto">
         {/* Horarios */}
         {schedules.length > 0 && (
           <div className="bg-[#FFFDF6] rounded-2xl p-4 border border-[#EDE6D8]">

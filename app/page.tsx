@@ -22,7 +22,7 @@ export default function LoginPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "login", module: null, actorName: guestData.name, actorEmail: guestData.email, details: "Guest inició sesión en la PWA" }),
     }).catch(() => {});
-    router.push("/huespedes");
+    router.push("/home");
   };
 
   return (
@@ -37,7 +37,7 @@ export default function LoginPage() {
 
       {/* Logo */}
       <div className="relative z-10 pt-12 flex justify-center">
-        <img src="/images/logo.png" alt="Hotel Termas de Chillán" className="h-16 object-contain drop-shadow-lg" />
+        <img src="/images/Imagotipo Hotel Termas de Chillán Horizontal.svg" alt="Hotel Termas de Chillán" className="h-16 object-contain drop-shadow-lg" />
       </div>
 
       {/* Form — sin card, directo sobre la imagen */}

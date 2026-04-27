@@ -27,20 +27,19 @@ export default function RestaurantesPage() {
   return (
     <div className="min-h-svh bg-[#F5F0E8]">
       <Header />
-      <div className="pt-16 pb-24">
-        <div className="px-5 py-6">
-          <h1 className="font-playfair text-[#1B4332] text-[32px] font-bold text-center mb-6">
-            Nuestros Restaurantes
+      <div className="pt-16 pb-24 md:pb-12">
+        <div className="px-5 py-6 md:max-w-3xl md:mx-auto">
+          <h1 className="font-playfair font-bold text-center mb-6" style={{ fontSize: 40, lineHeight: 1, color: '#54432B' }}>
+            Comer y Beber
           </h1>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col items-center md:flex-row md:justify-center md:flex-wrap" style={{ gap: 46 }}>
             {RESTAURANTS.map((r) => (
               <Link key={r.href} href={r.href}>
-                <div className="relative h-44 rounded-3xl overflow-hidden shadow-md active:scale-[0.98] transition-transform">
+                <div className="relative rounded-3xl overflow-hidden shadow-md active:scale-[0.98] transition-transform card-enter" style={{ width: 382, height: 114 }}>
                   <img src={imgs[r.key] ?? r.defaultImg} alt={r.label} className="absolute inset-0 w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <h2 className="font-playfair text-white text-2xl font-bold">{r.label}</h2>
-                    <p className="text-white/80 text-[12px] mt-0.5">{r.desc}</p>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <h2 className="font-playfair text-white font-bold text-center" style={{ fontSize: 24, lineHeight: 1 }}>{r.label}</h2>
                   </div>
                 </div>
               </Link>

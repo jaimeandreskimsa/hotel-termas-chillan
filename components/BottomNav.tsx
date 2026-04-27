@@ -9,18 +9,11 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B4332] flex items-center justify-around px-6 py-2"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B4332] flex items-center justify-around px-6 py-2 md:hidden"
       style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}
     >
       <Link href="/home" className="flex flex-col items-center gap-0.5 p-2 text-white/80">
         <i className="fi-ts-house-blank" style={{ fontSize: 22 }} />
-      </Link>
-
-      {/* Center add guest button */}
-      <Link href="/huespedes" className="relative -top-4">
-        <div className="w-14 h-14 rounded-full bg-[#D4722A] flex items-center justify-center shadow-lg border-4 border-[#1B4332]">
-          <span className="text-white font-bold text-[28px] leading-none">+</span>
-        </div>
       </Link>
 
       <Link href="/wellness" className="flex flex-col items-center gap-0.5 p-2 text-white/80">

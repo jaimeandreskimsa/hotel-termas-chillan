@@ -5,6 +5,7 @@ import Image from "next/image";
 
 interface Item { id: number; restaurant: string; category: string; subcategory: string | null; name: string; description: string | null; price: string | null; active: boolean; }
 interface HeroProgram { id: number; type: string; image: string | null; }
+interface Schedule { id: number; restaurant: string; info: string; active: boolean; }
 
 const RESTAURANTS = ["arboleda", "lagrieta", "muffin"];
 const RESTAURANT_LABELS: Record<string, string> = { arboleda: "Arboleda", lagrieta: "La Grieta", muffin: "Muffin Café" };
@@ -36,11 +37,15 @@ function EditModal({ item, onSave, onClose }: { item: Partial<Item>; onSave: (d:
   );
 }
 
-export default function RestaurantesAdminClient({ initialItems, initialPrograms = [] }: { initialItems: Item[]; initialPrograms?: HeroProgram[] }) {
+export default function RestaurantesAdminClient({ initialItems, initialPrograms = [], initialSchedules = [] }: { initialItems: Item[]; initialPrograms?: HeroProgram[]; initialSchedules?: Schedule[] }) {
   const [activeRest, setActiveRest] = useState(RESTAURANTS[0]);
   const [items, setItems] = useState(initialItems);
   const [editing, setEditing] = useState<Partial<Item> | null>(null);
   const [query, setQuery] = useState("");
+  const [schedules, setSchedules] = useState(initialSchedules);
+  const [scheduleInput, setScheduleInput] = useState("");
+  const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
+  const [editingScheduleText, setEditingScheduleText] = useState("");
 
   // Hero images per restaurant
   const [heroImgs, setHeroImgs] = useState<Record<string, string>>(() => {
@@ -146,6 +151,63 @@ export default function RestaurantesAdminClient({ initialItems, initialPrograms 
           </button>
         </div>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleHeroUpload} />
+      </div>
+
+      {/* Schedules section */}
+      <div className="mb-6">
+        <h2 className="font-semibold text-gray-600 text-[13px] uppercase tracking-wide mb-3">Horarios de Atención</h2>
+        <div className="flex flex-col gap-2 mb-4">
+          {schedules.filter(s => s.restaurant === activeRest).map(s => (
+            <div key={s.id} className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm flex items-center gap-3">
+              {editingSchedule?.id === s.id ? (
+                <>
+                  <input
+                    className="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-[13px]"
+                    value={editingScheduleText}
+                    onChange={e => setEditingScheduleText(e.target.value)}
+                  />
+                  <button onClick={async () => {
+                    const res = await fetch("/api/admin/restaurantes/schedules", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: s.id, info: editingScheduleText }) });
+                    const json = await res.json();
+                    setSchedules(prev => prev.map(x => x.id === json.schedule.id ? json.schedule : x));
+                    setEditingSchedule(null);
+                  }} className="text-[#1B4332] hover:text-green-800"><Save size={15} /></button>
+                  <button onClick={() => setEditingSchedule(null)} className="text-gray-400"><X size={15} /></button>
+                </>
+              ) : (
+                <>
+                  <p className="flex-1 text-[13px] text-gray-800">{s.info}</p>
+                  <button onClick={() => { setEditingSchedule(s); setEditingScheduleText(s.info); }} className="p-1.5 rounded-lg hover:bg-gray-50 text-gray-400 hover:text-gray-700"><Pencil size={13} /></button>
+                  <button onClick={async () => {
+                    if (!confirm("¿Eliminar este horario?")) return;
+                    await fetch("/api/admin/restaurantes/schedules", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: s.id }) });
+                    setSchedules(prev => prev.filter(x => x.id !== s.id));
+                  }} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"><Trash2 size={13} /></button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <input
+            className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] outline-none focus:border-[#1B4332] bg-white"
+            placeholder='Ej: Lunes a Viernes: 12:00 – 22:00'
+            value={scheduleInput}
+            onChange={e => setScheduleInput(e.target.value)}
+          />
+          <button
+            onClick={async () => {
+              if (!scheduleInput.trim()) return;
+              const res = await fetch("/api/admin/restaurantes/schedules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ restaurant: activeRest, info: scheduleInput.trim() }) });
+              const json = await res.json();
+              setSchedules(prev => [...prev, json.schedule]);
+              setScheduleInput("");
+            }}
+            className="flex items-center gap-1.5 bg-[#1B4332] text-white px-4 py-2.5 rounded-xl text-[13px] font-medium"
+          >
+            <Plus size={14} /> Agregar
+          </button>
+        </div>
       </div>
 
       <button onClick={() => setEditing({ restaurant: activeRest, active: true })} className="flex items-center gap-2 bg-[#1B4332] text-white px-4 py-2 rounded-xl text-[13px] font-medium mb-5">

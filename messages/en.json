@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "home": "Home",
+    "room": "My Room",
+    "restaurants": "Food & Drinks",
+    "activities": "Experiences",
+    "wellness": "Wellness & Spa",
+    "family": "Family & Kids",
+    "emergency": "Emergency Contact"
+  },
+  "common": {
+    "back": "Back",
+    "summer": "Summer",
+    "winter": "Winter",
+    "loading": "Loading...",
+    "schedule": "Opening Hours",
+    "scheduleNote": "To book, call 3544 from your room or visit the reception.",
+    "continuous": "Open All Day"
+  },
+  "home": {
+    "welcome": "Welcome,",
+    "alerts": "Important Notices",
+    "events": "Upcoming Events",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out"
+  },
+  "room": {
+    "title": "My Room",
+    "services": "Services",
+    "housekeeping": "Housekeeping",
+    "security": "Security",
+    "cashier": "Cashier",
+    "protocol": "Protocol",
+    "rules": "House Rules"
+  },
+  "restaurants": {
+    "title": "Food & Drinks",
+    "menu": "Menu",
+    "schedules": "Hours",
+    "arboleda": "La Arboleda",
+    "lagrieta": "La Grieta",
+    "muffin": "Muffin Café"
+  },
+  "activities": {
+    "title": "Experiences & Activities",
+    "seasonal": "Seasonal Activities",
+    "disclaimer": "Activities are subject to availability and weather conditions."
+  },
+  "wellness": {
+    "title": "Wellness & Spa",
+    "spa": "Spa Alunco",
+    "gym": "Gym",
+    "fitness": "Fitness & Classes",
+    "spaNote": "To book, call 3544 from your room or visit the Spa reception."
+  },
+  "family": {
+    "title": "Family & Kids",
+    "kids": "Kids",
+    "daycare": "Daycare",
+    "seasonal": "Seasonal\nActivities",
+    "activities": "Activities",
+    "daycareRules": "Daycare Rules"
+  },
+  "emergency": {
+    "title": "Emergency Contact"
+  }
+}

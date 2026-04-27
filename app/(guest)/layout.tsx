@@ -1,5 +1,13 @@
 import { GuestProvider } from "@/components/GuestProvider";
+import { LanguageProvider } from "@/components/LanguageProvider";
+import PageTransition from "@/components/PageTransition";
 
 export default function GuestLayout({ children }: { children: React.ReactNode }) {
-  return <GuestProvider>{children}</GuestProvider>;
+  return (
+    <LanguageProvider>
+      <GuestProvider>
+        <PageTransition>{children}</PageTransition>
+      </GuestProvider>
+    </LanguageProvider>
+  );
 }

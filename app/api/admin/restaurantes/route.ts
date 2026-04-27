@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { restaurantItems } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { logAction } from "@/lib/logger";
+import { autoTranslate } from "@/lib/deepl";
 
 async function getSession() {
   const session = await auth();
@@ -18,7 +19,8 @@ export async function POST(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json();
-  const [item] = await db.insert(restaurantItems).values({ restaurant: body.restaurant, category: body.category, subcategory: body.subcategory, name: body.name, description: body.description, price: body.price, order: body.order ?? 99 }).returning();
+  const translations = await autoTranslate({ name: body.name, description: body.description });
+  const [item] = await db.insert(restaurantItems).values({ restaurant: body.restaurant, category: body.category, subcategory: body.subcategory, name: body.name, description: body.description, price: body.price, order: body.order ?? 99, translations }).returning();
   await logAction({ type: "admin", action: "create_item", module: "restaurantes", actorName: session.user?.name, actorEmail: session.user?.email, details: `Creó ítem: ${body.name} en ${body.restaurant}` });
   return NextResponse.json({ item });
 }
@@ -27,7 +29,8 @@ export async function PATCH(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json();
-  const [item] = await db.update(restaurantItems).set({ category: body.category, subcategory: body.subcategory, name: body.name, description: body.description, price: body.price }).where(eq(restaurantItems.id, body.id)).returning();
+  const translations = await autoTranslate({ name: body.name, description: body.description });
+  const [item] = await db.update(restaurantItems).set({ category: body.category, subcategory: body.subcategory, name: body.name, description: body.description, price: body.price, translations }).where(eq(restaurantItems.id, body.id)).returning();
   await logAction({ type: "admin", action: "update_item", module: "restaurantes", actorName: session.user?.name, actorEmail: session.user?.email, details: `Actualizó ítem: ${body.name}` });
   return NextResponse.json({ item });
 }

@@ -2,13 +2,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { LayoutDashboard, Sparkles, UtensilsCrossed, Mountain, Baby, BedDouble, Bell, Users, LogOut, Activity, Menu, X } from "lucide-react";
+import { LayoutDashboard, Sparkles, UtensilsCrossed, Mountain, Baby, BedDouble, Bell, Users, LogOut, Activity, Menu, X, CalendarDays, Settings } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, module: null, superadminOnly: false },
   { href: "/admin/alertas", label: "Alertas", icon: Bell, module: null, superadminOnly: false },
+  { href: "/admin/eventos", label: "Eventos", icon: CalendarDays, module: null, superadminOnly: true },
   { href: "/admin/spa", label: "Spa & Gimnasio", icon: Sparkles, module: "spa", superadminOnly: false },
   { href: "/admin/restaurantes", label: "Restaurantes", icon: UtensilsCrossed, module: "restaurantes", superadminOnly: false },
   { href: "/admin/actividades", label: "Actividades", icon: Mountain, module: "actividades", superadminOnly: false },
@@ -16,6 +17,7 @@ const NAV = [
   { href: "/admin/habitacion", label: "Mi Habitación", icon: BedDouble, module: "habitacion", superadminOnly: false },
   { href: "/admin/usuarios", label: "Usuarios", icon: Users, module: null, superadminOnly: false },
   { href: "/admin/logs", label: "Registro de Actividad", icon: Activity, module: null, superadminOnly: true },
+  { href: "/admin/configuracion", label: "Configuración", icon: Settings, module: null, superadminOnly: true },
 ];
 
 function SidebarContent({ visibleNav, pathname, session, role, userModule, onNavClick }: {
@@ -29,7 +31,7 @@ function SidebarContent({ visibleNav, pathname, session, role, userModule, onNav
   return (
     <>
       <div className="py-6 px-4 border-b border-white/10 flex items-center justify-center">
-        <Image src="/images/logo.png" alt="Logo" width={100} height={100} className="object-contain" />
+        <Image src="/images/Imagotipo Hotel Termas de Chillán Horizontal.svg" alt="Hotel Termas de Chillán" width={160} height={40} className="h-10 w-auto object-contain" />
       </div>
       <nav className="flex-1 p-3 flex flex-col gap-1 overflow-y-auto">
         {visibleNav.map(item => (

@@ -6,34 +6,24 @@ export default function EmergenciaPage() {
   return (
     <div className="min-h-screen bg-[#F5F0EB] flex flex-col">
       <Header />
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-28">
-        <div className="w-full max-w-sm bg-[#EDE8E3] rounded-2xl p-8 shadow-sm text-center">
-          <h1 className="font-playfair text-[32px] font-bold text-[#2D2D2D] mb-6 underline decoration-2 underline-offset-4">
+      <div className="pt-14 pb-28 md:pb-12 md:max-w-2xl md:mx-auto">
+        {/* Hero naranja */}
+        <div className="relative w-full flex flex-col items-center justify-center rounded-b-3xl" style={{ height: 378, background: "linear-gradient(180deg, #C0553A 0%, #D4722A 100%)" }}>
+          <h1 className="text-white drop-shadow-lg mb-6" style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 40, lineHeight: 1, textAlign: "center" }}>
             Emergencia
           </h1>
-
-          <p className="text-[#4A4A4A] text-sm leading-relaxed mb-5">
+        </div>
+        {/* Contenido */}
+        <div className="flex flex-col items-center gap-5 text-center px-6 py-8">
+          <p className="text-[#4A4A4A] text-[14px] leading-relaxed">
             Si necesitas atención médica inmediata,<br />
             comunícate con la recepción llamando al:
           </p>
-
-          <a
-            href="tel:3500"
-            className="inline-block bg-[#B85C45] text-white font-semibold text-lg px-10 py-3 rounded-full mb-8 active:opacity-80"
-          >
-            3500
-          </a>
-
-          <p className="text-[#4A4A4A] text-sm leading-relaxed mb-5">
+          <a href="tel:3500" className="inline-block bg-[#B85C45] text-white font-semibold text-[16px] px-10 py-3 rounded-full active:opacity-80">3500</a>
+          <p className="text-[#4A4A4A] text-[14px] leading-relaxed">
             Si te encuentras fuera del Hotel, llama al:
           </p>
-
-          <a
-            href="tel:+5622322 3500"
-            className="inline-block bg-[#B85C45] text-white font-semibold text-lg px-8 py-3 rounded-full active:opacity-80"
-          >
-            +562 2322 3500
-          </a>
+          <a href="tel:+56223223500" className="inline-block bg-[#B85C45] text-white font-semibold text-[16px] px-8 py-3 rounded-full active:opacity-80">+562 2322 3500</a>
         </div>
       </div>
       <BottomNav />

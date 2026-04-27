@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
-import PageHero from "@/components/PageHero";
 
 interface GymClass { id: number; name: string; description: string | null; price: string | null; schedule: string | null; }
 
 export default function GimnasioPage() {
+  const router = useRouter();
   const [classes, setClasses] = useState<GymClass[]>([]);
   const [heroImg, setHeroImg] = useState("/images/gimnasio.jpg");
 
@@ -22,13 +23,18 @@ export default function GimnasioPage() {
     <div className="min-h-svh bg-[#F5F0E8]">
       <Header />
       <div className="pt-14">
-        <PageHero
-          title="Gimnasio"
-          imageSrc={heroImg}
-          height="h-[378px]"
-        />
+        <div className="relative overflow-hidden shadow-lg" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${heroImg}')` }} />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h1 className="font-playfair text-white font-bold text-center drop-shadow-lg" style={{ fontSize: 40, lineHeight: 1 }}>Gimnasio</h1>
+          </div>
+          <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+            <button onClick={() => router.back()} className="bg-[#1B4332] text-white text-[14px] font-semibold px-6 py-2 rounded-full active:opacity-80">Volver</button>
+          </div>
+        </div>
 
-        <div className="px-4 py-5 pb-24 flex flex-col gap-4">
+        <div className="px-4 py-5 pb-24 md:pb-12 flex flex-col gap-4 md:max-w-3xl md:mx-auto">
           {/* Hours */}
           <div className="bg-white rounded-2xl p-4 border border-[#EDE6D8]">
             <p className="font-semibold text-[#1B4332] text-[14px] mb-1">Horarios de Atención:</p>

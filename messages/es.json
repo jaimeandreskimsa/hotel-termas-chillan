@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "room": "Mi habitación",
+    "restaurants": "Comer y Beber",
+    "activities": "Experiencias",
+    "wellness": "Wellness & Spa",
+    "family": "Familia y Niños",
+    "emergency": "Contacto de Emergencia"
+  },
+  "common": {
+    "back": "Volver",
+    "summer": "Verano",
+    "winter": "Invierno",
+    "loading": "Cargando...",
+    "schedule": "Horarios de Atención",
+    "scheduleNote": "Para agendar, llama al 3544 desde tu habitación o acércate a recepción.",
+    "continuous": "Horario Continuo"
+  },
+  "home": {
+    "welcome": "Bienvenido,",
+    "alerts": "Avisos importantes",
+    "events": "Próximos eventos",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out"
+  },
+  "room": {
+    "title": "Mi Habitación",
+    "services": "Servicios",
+    "housekeeping": "Mucamas",
+    "security": "Seguridad",
+    "cashier": "Caja",
+    "protocol": "Protocolo",
+    "rules": "Convivencia"
+  },
+  "restaurants": {
+    "title": "Comer y Beber",
+    "menu": "Menú",
+    "schedules": "Horarios",
+    "arboleda": "La Arboleda",
+    "lagrieta": "La Grieta",
+    "muffin": "Muffin Café"
+  },
+  "activities": {
+    "title": "Experiencias y Actividades",
+    "seasonal": "Actividades de Temporada",
+    "disclaimer": "Las actividades están sujetas a disponibilidad y condiciones climáticas."
+  },
+  "wellness": {
+    "title": "Wellness & Spa",
+    "spa": "Spa Alunco",
+    "gym": "Gimnasio",
+    "fitness": "Fitness y Clases",
+    "spaNote": "Para agendar, llama al 3544 desde tu habitación o acércate a la recepción del Spa."
+  },
+  "family": {
+    "title": "Familia y Niños",
+    "kids": "Niños",
+    "daycare": "Guardería",
+    "seasonal": "Actividades de\nTemporada",
+    "activities": "Actividades",
+    "daycareRules": "Reglamento Guardería"
+  },
+  "emergency": {
+    "title": "Contacto de Emergencia"
+  }
+}

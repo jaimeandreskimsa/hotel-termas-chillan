@@ -111,24 +111,23 @@ export default function FamiliaPage() {
       <div className="pt-14">
         {!selected ? (
           /* ── List view ── */
-          <div className="flex flex-col">
-            <div className="px-5 pt-8 pb-2 text-center">
-              <h1 className="font-playfair text-[#1B4332] text-[32px] font-bold leading-tight">
-                Familia y Niños
-              </h1>
-            </div>
-            <div className="px-4 py-5 pb-24 flex flex-col gap-4">
+          <div className="px-4 pt-8 pb-24 md:pb-12 md:max-w-2xl md:mx-auto">
+            <h1 className="font-playfair font-bold text-center mb-6" style={{ fontSize: 40, lineHeight: 1, color: '#54432B' }}>
+              Familia y Niños
+            </h1>
+            <div className="flex flex-col items-center gap-[46px]">
               {CATEGORIES.map(cat => {
                 const img = cat.key === "ninos" ? catNinosImg : catGuarderiaImg;
                 return (
                 <button
                   key={cat.key}
                   onClick={() => setSelected(cat.key)}
-                  className="w-full relative h-[130px] rounded-2xl overflow-hidden shadow-md active:scale-[0.98] transition-transform"
+                  className="relative rounded-3xl overflow-hidden shadow-md active:scale-[0.98] transition-transform card-enter"
+                  style={{ width: 382, height: 114, background: '#1B4332' }}
                 >
                   <img src={img} alt={cat.label} className="absolute inset-0 w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-[#1B4332]/55" />
-                  <span className="absolute inset-0 flex items-center justify-center font-playfair text-white text-[22px] font-bold drop-shadow-md">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <span className="absolute inset-0 flex items-center justify-center font-playfair text-white font-bold drop-shadow-md" style={{ fontSize: 24 }}>
                     {cat.label}
                   </span>
                 </button>
@@ -138,41 +137,38 @@ export default function FamiliaPage() {
           </div>
         ) : selected === "ninos" ? (
           /* ── Niños detail ── */
-          <div className="pb-24">
+          <div className="pb-24 md:pb-12">
+            {/* Hero */}
+            <div className="relative overflow-hidden shadow-lg" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
+              <img src={catNinosImg} alt="Niños" className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/40" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <h2 className="font-playfair text-white font-bold text-center drop-shadow-lg" style={{ fontSize: 40, lineHeight: 1 }}>Niños</h2>
+              </div>
+              <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+                <button onClick={() => setSelected(null)} className="bg-[#1B4332] text-white text-[14px] font-semibold px-6 py-2 rounded-full active:opacity-80">Volver</button>
+              </div>
+            </div>
+
             {/* Season toggle */}
-            <div className="flex bg-[#1B4332] gap-2 px-4 py-3">
+            <div className="flex gap-2 px-6 pt-5">
               {(["verano", "invierno"] as const).map(s => (
                 <button
                   key={s}
                   onClick={() => setSeason(s)}
-                  className={`flex-1 py-2 rounded-full text-[13px] font-semibold transition-all ${season === s ? "bg-white text-[#1B4332]" : "text-white border border-white/40"}`}
+                  className={`flex-1 py-2 rounded-full text-[13px] font-semibold transition-all ${season === s ? "bg-[#1B4332] text-white" : "text-[#1B4332] border border-[#1B4332]"}`}
                 >
-                  {s === "verano" ? "☀️ Verano" : "⛷️ Invierno"}
+                  {s === "verano" ? "Verano" : "Invierno"}
                 </button>
               ))}
-            </div>
-            {/* Hero */}
-            <div className="relative h-[220px] w-full rounded-b-3xl overflow-hidden">
-              <img src={catNinosImg} alt="Niños" className="absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/20 to-black/65" />
-              <button
-                onClick={() => setSelected(null)}
-                className="absolute top-4 left-4 flex items-center gap-1.5 bg-[#1B4332] text-white rounded-full px-4 py-2 text-[13px] font-semibold shadow-lg"
-              >
-                <i className="fi-rs-angle-left" style={{ fontSize: 13 }} />
-                Volver
-              </button>
-              <div className="absolute bottom-5 left-0 right-0 text-center px-6">
-                <h2 className="font-playfair text-white text-[28px] font-bold drop-shadow-lg">Niños</h2>
-              </div>
             </div>
 
             <div className="flex flex-col gap-7 pt-6">
               {/* Actividades de temporada */}
               {seasonActividades.length > 0 && (
                 <div>
-                  <h2 className="font-playfair text-[#1B4332] text-[22px] font-bold text-center mb-4 px-4">
-                    Actividades de Temporada
+                  <h2 className="font-playfair font-bold text-center mb-4 px-4" style={{ fontSize: 32, lineHeight: 1, color: '#54432B' }}>
+                    Actividades de<br />Temporada
                   </h2>
                   <div className="flex gap-3 overflow-x-auto no-scrollbar px-4 snap-x snap-mandatory">
                     {seasonActividades.map(p => (
@@ -197,6 +193,20 @@ export default function FamiliaPage() {
                   </div>
                 </div>
               )}
+
+              {/* Empty state */}
+              {seasonActividades.length === 0 && clubs.length === 0 && (
+                <div className="mx-4 bg-white rounded-2xl p-6 shadow-sm text-center">
+                  <i className="fi-ts-kids text-[#1B4332]" style={{ fontSize: 36 }} />
+                  <p className="font-playfair font-bold text-[#1B4332] text-[18px] mt-3 mb-1">Próximamente</p>
+                  <p className="text-[#7B6354] text-[13px] leading-relaxed">
+                    Las actividades para niños de esta temporada<br />estarán disponibles muy pronto.
+                  </p>
+                  <p className="text-[#9B9280] text-[12px] mt-3">
+                    Consulta en recepción para más información.
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="px-4 mt-8">
@@ -211,24 +221,20 @@ export default function FamiliaPage() {
           </div>
         ) : (
           /* ── Guardería detail ── */
-          <div className="pb-24">
+          <div className="pb-24 md:pb-12">
             {/* Hero */}
-            <div className="relative h-[220px] w-full rounded-b-3xl overflow-hidden">
+            <div className="relative overflow-hidden shadow-lg" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
               <img src={catGuarderiaImg} alt="Guardería" className="absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/20 to-black/65" />
-              <button
-                onClick={() => setSelected(null)}
-                className="absolute top-4 left-4 flex items-center gap-1.5 bg-[#1B4332] text-white rounded-full px-4 py-2 text-[13px] font-semibold shadow-lg"
-              >
-                <i className="fi-rs-angle-left" style={{ fontSize: 13 }} />
-                Volver
-              </button>
-              <div className="absolute bottom-5 left-0 right-0 text-center px-6">
-                <h2 className="font-playfair text-white text-[28px] font-bold drop-shadow-lg">Guardería</h2>
+              <div className="absolute inset-0 bg-black/40" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <h2 className="font-playfair text-white font-bold text-center drop-shadow-lg" style={{ fontSize: 40, lineHeight: 1 }}>Guardería</h2>
+              </div>
+              <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+                <button onClick={() => setSelected(null)} className="bg-[#1B4332] text-white text-[14px] font-semibold px-6 py-2 rounded-full active:opacity-80">Volver</button>
               </div>
             </div>
 
-            <div className="px-4 pt-6 flex flex-col gap-4">
+            <div className="px-4 pt-6 flex flex-col gap-4 md:max-w-3xl md:mx-auto">
               {guarderiaPrograms.length > 0 ? (
                 <>
                   {guarderiaPrograms.map(g => (

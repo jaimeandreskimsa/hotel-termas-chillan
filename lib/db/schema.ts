@@ -1,4 +1,4 @@
-import { pgTable, text, integer, boolean, timestamp, serial, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, boolean, timestamp, serial, varchar, jsonb } from "drizzle-orm/pg-core";
 
 // Admin users
 export const admins = pgTable("admins", {
@@ -18,6 +18,7 @@ export const alerts = pgTable("alerts", {
   message: text("message").notNull(),
   type: varchar("type", { length: 50 }).notNull().default("info"), // 'info' | 'warning' | 'closed'
   active: boolean("active").notNull().default(true),
+  translations: jsonb("translations").$type<{ en?: { title?: string; message?: string }; pt?: { title?: string; message?: string } }>(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -31,6 +32,7 @@ export const spaServices = pgTable("spa_services", {
   price: varchar("price", { length: 100 }),
   active: boolean("active").notNull().default(true),
   order: integer("order").notNull().default(0),
+  translations: jsonb("translations").$type<{ en?: { name?: string; description?: string }; pt?: { name?: string; description?: string } }>(),
 });
 
 // Spa schedules
@@ -50,6 +52,7 @@ export const gymClasses = pgTable("gym_classes", {
   schedule: varchar("schedule", { length: 100 }),
   active: boolean("active").notNull().default(true),
   order: integer("order").notNull().default(0),
+  translations: jsonb("translations").$type<{ en?: { name?: string; description?: string }; pt?: { name?: string; description?: string } }>(),
 });
 
 // Restaurant items (Arboleda, La Grieta, Muffin)
@@ -63,6 +66,7 @@ export const restaurantItems = pgTable("restaurant_items", {
   price: varchar("price", { length: 100 }),
   active: boolean("active").notNull().default(true),
   order: integer("order").notNull().default(0),
+  translations: jsonb("translations").$type<{ en?: { name?: string; description?: string }; pt?: { name?: string; description?: string } }>(),
 });
 
 // Restaurant schedules
@@ -84,6 +88,7 @@ export const activities = pgTable("activities", {
   active: boolean("active").notNull().default(true),
   order: integer("order").notNull().default(0),
   image: varchar("image", { length: 500 }),
+  translations: jsonb("translations").$type<{ en?: { name?: string; description?: string }; pt?: { name?: string; description?: string } }>(),
 });
 
 // Family programs
@@ -97,6 +102,7 @@ export const familyPrograms = pgTable("family_programs", {
   active: boolean("active").notNull().default(true),
   order: integer("order").notNull().default(0),
   image: varchar("image", { length: 500 }),
+  translations: jsonb("translations").$type<{ en?: { name?: string; description?: string }; pt?: { name?: string; description?: string } }>(),
 });
 
 // Room products
@@ -117,6 +123,22 @@ export const roomInfo = pgTable("room_info", {
   content: text("content").notNull(),
   active: boolean("active").notNull().default(true),
   order: integer("order").notNull().default(0),
+  translations: jsonb("translations").$type<{ en?: { title?: string; content?: string }; pt?: { title?: string; content?: string } }>(),
+});
+
+// Upcoming events shown on home
+export const events = pgTable("events", {
+  id: serial("id").primaryKey(),
+  day: varchar("day", { length: 10 }).notNull(),
+  month: varchar("month", { length: 20 }).notNull(),
+  time: varchar("time", { length: 20 }).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  location: varchar("location", { length: 255 }),
+  active: boolean("active").notNull().default(true),
+  order: integer("order").notNull().default(0),
+  translations: jsonb("translations").$type<{ en?: { title?: string; description?: string }; pt?: { title?: string; description?: string } }>(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Activity logs — registry of all guest & admin actions
@@ -129,4 +151,12 @@ export const activityLogs = pgTable("activity_logs", {
   actorEmail: varchar("actor_email", { length: 255 }), // guest email or admin email
   details: text("details"), // extra JSON or human-readable description
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// System settings — key/value store for admin-configurable settings
+export const systemSettings = pgTable("system_settings", {
+  id: serial("id").primaryKey(),
+  key: varchar("key", { length: 100 }).notNull().unique(),
+  value: text("value"),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
