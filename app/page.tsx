@@ -26,7 +26,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-svh w-full max-w-[480px] mx-auto overflow-hidden flex flex-col">
+    <div className="relative min-h-svh w-full overflow-hidden flex flex-col">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -40,44 +40,46 @@ export default function LoginPage() {
         <img src="/images/Imagotipo Hotel Termas de Chillán Horizontal.svg" alt="Hotel Termas de Chillán" className="h-16 object-contain drop-shadow-lg" />
       </div>
 
-      {/* Form — sin card, directo sobre la imagen */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-8 pt-10 pb-4">
-        <p className="font-playfair text-white text-[22px] font-bold text-center leading-snug mb-8 drop-shadow">
-          Para iniciar tu viaje,<br />por favor ingresa los<br />siguientes datos:
-        </p>
+      {/* Form — centered on desktop */}
+      <div className="relative z-10 flex-1 flex flex-col justify-center items-center px-8 pt-10 pb-4">
+        <div className="w-full max-w-sm">
+          <p className="font-playfair text-white text-[22px] font-bold text-center leading-snug mb-8 drop-shadow">
+            Para iniciar tu viaje,<br />por favor ingresa los<br />siguientes datos:
+          </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input
-            type="text"
-            placeholder="Nombre y Apellido"
-            value={name}
-            onChange={(e) => { setName(e.target.value); setError(""); }}
-            className="w-full bg-white/90 rounded-full px-5 py-3 text-[14px] text-[#3D2B1F] placeholder-[#9B9280] outline-none focus:bg-white transition"
-          />
-          <input
-            type="email"
-            placeholder="Correo Electrónico"
-            value={email}
-            onChange={(e) => { setEmail(e.target.value); setError(""); }}
-            className="w-full bg-white/90 rounded-full px-5 py-3 text-[14px] text-[#3D2B1F] placeholder-[#9B9280] outline-none focus:bg-white transition"
-          />
-          <label className="flex items-center gap-3 cursor-pointer mt-1">
-            <div className="relative shrink-0">
-              <input type="checkbox" checked={accepted} onChange={(e) => { setAccepted(e.target.checked); setError(""); }} className="sr-only" />
-              <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${accepted ? "bg-[#1B4332] border-[#1B4332]" : "border-white/60 bg-white/20"}`}>
-                {accepted && <svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <input
+              type="text"
+              placeholder="Nombre y Apellido"
+              value={name}
+              onChange={(e) => { setName(e.target.value); setError(""); }}
+              className="w-full bg-white/90 rounded-full px-5 py-3 text-[14px] text-[#3D2B1F] placeholder-[#9B9280] outline-none focus:bg-white transition"
+            />
+            <input
+              type="email"
+              placeholder="Correo Electrónico"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setError(""); }}
+              className="w-full bg-white/90 rounded-full px-5 py-3 text-[14px] text-[#3D2B1F] placeholder-[#9B9280] outline-none focus:bg-white transition"
+            />
+            <label className="flex items-center gap-3 cursor-pointer mt-1">
+              <div className="relative shrink-0">
+                <input type="checkbox" checked={accepted} onChange={(e) => { setAccepted(e.target.checked); setError(""); }} className="sr-only" />
+                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${accepted ? "bg-[#1B4332] border-[#1B4332]" : "border-white/60 bg-white/20"}`}>
+                  {accepted && <svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                </div>
               </div>
-            </div>
-            <span className="text-[12px] text-white/80">Leí y acepto los términos y condiciones.</span>
-          </label>
-          {error && <p className="text-red-300 text-[12px] text-center">{error}</p>}
-          <button
-            type="submit"
-            className="mx-auto mt-2 bg-[#1B4332] text-white rounded-full px-12 py-3 font-semibold text-[15px] active:scale-[0.98] transition-transform shadow-lg"
-          >
-            Comenzar
-          </button>
-        </form>
+              <span className="text-[12px] text-white/80">Leí y acepto los términos y condiciones.</span>
+            </label>
+            {error && <p className="text-red-300 text-[12px] text-center">{error}</p>}
+            <button
+              type="submit"
+              className="mx-auto mt-2 bg-[#1B4332] text-white rounded-full px-12 py-3 font-semibold text-[15px] active:scale-[0.98] transition-transform shadow-lg"
+            >
+              Comenzar
+            </button>
+          </form>
+        </div>
       </div>
 
       <div className="relative z-10 text-center pb-8">

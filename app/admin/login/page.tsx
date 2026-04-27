@@ -21,7 +21,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-svh bg-[#1B4332] flex flex-col items-center justify-center px-6">
+    <div className="admin-shell min-h-svh bg-[#1B4332] flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="flex justify-center mb-8">
           <img src="/images/logo.png" alt="Hotel Termas Chillán" className="h-20 w-auto object-contain" />
