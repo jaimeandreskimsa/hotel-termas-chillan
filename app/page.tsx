@@ -27,13 +27,13 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-svh w-full overflow-hidden flex flex-col">
-      {/* Background image */}
+      {/* Background image — fixed to cover full viewport on all screen sizes */}
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="fixed inset-0 bg-cover bg-center -z-10"
         style={{ backgroundImage: `url('/images/login-bg.jpg')` }}
       />
-      {/* Gradient: dark top for logo, lighter mid, darker bottom */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
+      {/* Gradient overlay — also fixed */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70 -z-10" />
 
       {/* Logo */}
       <div className="relative z-10 pt-12 flex justify-center">
