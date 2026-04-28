@@ -124,10 +124,7 @@ span[class^="fi-bs-"]::before, span[class*=" fi-bs-"]::before {
 @layer base {
   html {
     background-color: #1B4332;
-    background-image: url('/images/login-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-image: none;
     -webkit-tap-highlight-color: transparent;
     min-height: 100svh;
     display: flex;
