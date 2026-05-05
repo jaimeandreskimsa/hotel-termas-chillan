@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hoteltermas-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ravenswood
+      POSTGRES_PASSWORD: ravenswood_secret
+      POSTGRES_DB: hoteltermas
+    ports:
+      - "5436:5432"
+    volumes:
+      - hoteltermas_pgdata:/var/lib/postgresql/data
+
+volumes:
+  hoteltermas_pgdata:

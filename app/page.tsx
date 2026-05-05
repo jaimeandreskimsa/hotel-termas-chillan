@@ -26,18 +26,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-svh w-full overflow-hidden flex flex-col">
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/images/login-bg.jpg')` }}
-      />
-      {/* Gradient: dark top for logo, lighter mid, darker bottom */}
+    <div
+      className="relative min-h-svh w-full flex flex-col"
+      style={{
+        backgroundImage: `url('/images/login-bg.jpg')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
 
       {/* Logo */}
       <div className="relative z-10 pt-12 flex justify-center">
-        <img src="/images/Imagotipo Hotel Termas de Chillán Horizontal.svg" alt="Hotel Termas de Chillán" className="h-16 object-contain drop-shadow-lg" />
+        <img src="/images/logo-hotel-termas.svg" alt="Hotel Termas de Chillán" className="h-16 object-contain drop-shadow-lg" />
       </div>
 
       {/* Form — centered on desktop */}

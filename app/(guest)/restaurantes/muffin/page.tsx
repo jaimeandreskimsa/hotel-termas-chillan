@@ -39,7 +39,7 @@ export default function MuffinPage() {
           </div>
         </div>
         {schedules.length > 0 && (
-          <div className="px-4 py-3 bg-white border-b border-[#EDE6D8]">
+          <div className="px-4 py-3 bg-white border-b border-[#EDE6D8] text-center">
             <p className="text-[#1B4332] text-[12px] font-semibold uppercase tracking-wide mb-1">Horarios</p>
             {schedules.map(s => (
               <p key={s.id} className="text-[#4A4A4A] text-[13px]">{s.info}</p>

@@ -9,14 +9,13 @@ export default function PageTransition({ children }: { children: React.ReactNode
   const prevPathname = useRef(pathname);
 
   useEffect(() => {
+    setDisplayChildren(children);
     if (pathname !== prevPathname.current) {
       prevPathname.current = pathname;
-      setDisplayChildren(children);
       setTransitionKey(k => k + 1);
-    } else {
-      setDisplayChildren(children);
     }
-  }, [pathname, children]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
     <div key={transitionKey} className="page-transition">

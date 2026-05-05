@@ -86,7 +86,7 @@ export default function Header({ transparent = false }: HeaderProps) {
         {/* ── Mobile header (hidden on md+) ── */}
         <div className="flex md:hidden items-center justify-between px-4 py-3 max-w-[480px] mx-auto w-full">
           <Link href="/home">
-            <Image src="/images/Imagotipo Hotel Termas de Chillán Horizontal.svg" alt="Hotel Termas de Chillán" width={160} height={40} className="h-10 w-auto object-contain" />
+            <Image src="/images/logo-hotel-termas.svg" alt="Hotel Termas de Chillán" width={160} height={40} className="h-10 w-auto object-contain" />
           </Link>
           <div className="flex items-center gap-3">
             <LangSelector />
@@ -103,7 +103,7 @@ export default function Header({ transparent = false }: HeaderProps) {
         {/* ── Desktop header (hidden on mobile) ── */}
         <div className="hidden md:flex items-center justify-between px-8 py-3 max-w-7xl mx-auto w-full">
           <Link href="/home" className="shrink-0">
-            <Image src="/images/Imagotipo Hotel Termas de Chillán Horizontal.svg" alt="Hotel Termas de Chillán" width={180} height={44} className="h-11 w-auto object-contain" />
+            <Image src="/images/logo-hotel-termas.svg" alt="Hotel Termas de Chillán" width={180} height={44} className="h-11 w-auto object-contain" />
           </Link>
           <nav className="flex items-center gap-1">
             {NAV_ITEMS.map(item => (
@@ -128,7 +128,7 @@ export default function Header({ transparent = false }: HeaderProps) {
           <div className="absolute inset-0 bg-black/50" onClick={() => setMenuOpen(false)} />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-[#1B4332] flex flex-col rounded-b-3xl overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/15">
-              <Image src="/images/Imagotipo Hotel Termas de Chillán Horizontal.svg" alt="Hotel Termas de Chillán" width={160} height={40} className="h-10 w-auto object-contain" />
+              <Image src="/images/logo-hotel-termas.svg" alt="Hotel Termas de Chillán" width={160} height={40} className="h-10 w-auto object-contain" />
               <button onClick={() => setMenuOpen(false)} className="text-white p-1">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <line x1="4" y1="4" x2="20" y2="20" stroke="white" strokeWidth="2" strokeLinecap="round"/>

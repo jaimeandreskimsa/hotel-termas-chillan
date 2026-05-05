@@ -249,7 +249,7 @@ export default function HomePage() {
           {/* Alertas desktop — izquierda */}
           <div className="hidden md:flex flex-col gap-2 md:flex-1">
             {alerts.length > 0 ? (
-              <div className="rounded-2xl px-5 py-4 flex flex-col gap-3 h-full" style={{ background: "linear-gradient(135deg, #C05A2A 0%, #D4722A 100%)" }}>
+              <div className="rounded-2xl px-5 py-4 flex flex-col gap-3 h-full" style={{ background: "linear-gradient(135deg, #C96A46 0%, #DB7C59 100%)" }}>
                 <div className="flex items-center gap-2 mb-1">
                   <i className="fi-ts-bell text-white" style={{ fontSize: 16 }} />
                   <p className="text-white/80 text-[11px] font-semibold uppercase tracking-wide">Alertas</p>

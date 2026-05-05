@@ -31,7 +31,7 @@ function SidebarContent({ visibleNav, pathname, session, role, userModule, onNav
   return (
     <>
       <div className="py-6 px-4 border-b border-white/10 flex items-center justify-center">
-        <Image src="/images/Imagotipo Hotel Termas de Chillán Horizontal.svg" alt="Hotel Termas de Chillán" width={160} height={40} className="h-10 w-auto object-contain" />
+        <Image src="/images/logo-hotel-termas.svg" alt="Hotel Termas de Chillán" width={160} height={40} className="h-10 w-auto object-contain" />
       </div>
       <nav className="flex-1 p-3 flex flex-col gap-1 overflow-y-auto">
         {visibleNav.map(item => (

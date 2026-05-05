@@ -182,15 +182,14 @@ export default function ActividadesPage() {
           /* ── Category list ── */
           <div className="flex flex-col">
           {/* Season toggle */}
-          <div className="flex gap-2 px-4 pt-8 pb-3 bg-[#F5F0E8]">
+          <div className="flex gap-2 px-4 pt-8 pb-3 bg-[#F5F0E8] justify-center">
             {(["verano", "invierno"] as const).map((s) => (
               <button
                 key={s}
                 onClick={() => { setSeason(s); setSelectedCat(null); }}
-                className={`flex-1 py-2 rounded-full transition-all border font-playfair font-bold text-center ${
+                className={`px-8 py-2 rounded-full transition-all border font-playfair font-bold text-center text-lg md:text-xl ${
                   season === s ? "bg-[#1B4332] text-white border-[#1B4332]" : "text-[#1B4332] border-[#1B4332]/40 bg-transparent"
                 }`}
-                style={{ fontSize: 24, lineHeight: 1 }}
               >
                 {s === "verano" ? "Verano" : "Invierno"}
               </button>
@@ -209,8 +208,8 @@ export default function ActividadesPage() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCat(cat)}
-                    className="relative rounded-3xl overflow-hidden shadow-md active:scale-[0.98] transition-transform card-enter"
-                    style={{ width: 382, height: 114 }}
+                    className="relative w-full max-w-sm rounded-3xl overflow-hidden shadow-md active:scale-[0.98] transition-transform card-enter"
+                    style={{ height: 114 }}
                   >
                     <img src={getCatImg(cat)} alt={cat} className="absolute inset-0 w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -226,9 +225,9 @@ export default function ActividadesPage() {
           </div>
         ) : (
           /* ── Category detail ── */
-          <div className="pb-24 md:pb-12 md:max-w-4xl md:mx-auto">
-            {/* Hero */}
-            <div className="relative overflow-hidden" style={{ width: '100%', height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
+          <div className="pb-24 md:pb-12">
+            {/* Hero — full width */}
+            <div className="relative overflow-hidden w-full" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
               <img
                 src={getCatImg(selectedCat)}
                 alt={selectedCat}
@@ -247,7 +246,7 @@ export default function ActividadesPage() {
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 md:max-w-4xl md:mx-auto">
               {selectedCat === "Caminatas y Trekkings" && (
                 <div className="px-5 pt-4 pb-2 text-center">
                   <p className="text-[#3D2B1F] text-[14px] leading-relaxed">Exploración del entorno natural. Snacks incluidos y cocktail en salidas de puesta de sol.</p>
