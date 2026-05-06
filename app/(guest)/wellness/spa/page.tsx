@@ -68,7 +68,7 @@ export default function SpaPage() {
       <div className="px-4 py-5 pb-24 md:pb-12 flex flex-col gap-4 md:max-w-3xl md:mx-auto">
         {/* Horarios */}
         {schedules.length > 0 && (
-          <div className="bg-[#FFFDF6] rounded-2xl p-4 border border-[#EDE6D8]">
+          <div className="bg-[#F3ECE4] rounded-2xl p-4 border border-[#EDE6D8]">
             <p className="font-bold text-[#3D2B1F] text-[15px] mb-2">Horarios de Atención:</p>
             {schedules.map((s) => (
               <p key={s.venue} className="text-[14px] text-[#3D2B1F] leading-relaxed">
@@ -87,7 +87,7 @@ export default function SpaPage() {
 
         {/* Servicios */}
         {filtered.length > 0 ? filtered.map(service => (
-          <div key={service.id} className="bg-[#FFFDF6] rounded-2xl p-4 border border-[#EDE6D8] shadow-sm">
+          <div key={service.id} className="bg-[#F3ECE4] rounded-2xl p-4 border border-[#EDE6D8] shadow-sm">
             <h3 className="font-bold text-[#3D2B1F] text-[15px] mb-1">{service.name}</h3>
             {service.description && (
               <p className="text-[#6B6B6B] text-[13px] leading-relaxed mb-3">{service.description}</p>
@@ -113,7 +113,7 @@ export default function SpaPage() {
 
         {/* Reglamento */}
         {reglamento && (
-          <div className="mt-4 bg-[#FFFDF6] rounded-2xl border border-[#EDE6D8] overflow-hidden">
+          <div className="mt-4 bg-[#F3ECE4] rounded-2xl border border-[#EDE6D8] overflow-hidden">
             <button
               onClick={() => setReglamentoOpen(o => !o)}
               className="w-full flex items-center justify-between px-4 py-3 text-left"
