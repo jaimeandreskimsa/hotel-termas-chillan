@@ -7,7 +7,7 @@ import BottomNav from "@/components/BottomNav";
 interface SpaService { id: number; category: string; name: string; description: string | null; duration: string | null; price: string | null; }
 interface Schedule { venue: string; hours: string; }
 
-const CATEGORIES = ["Masajes y Terapias", "Rituales de Renovación", "Faciales y Jacuzzi", "Peluquería y Manicure", "Circuitos de Agua"];
+const CATEGORIES = ["Masajes y terapias", "Rituales de Renovación Corporal", "Tratamientos Faciales y Jacuzzi", "Peluquería y Manicure", "Circuitos de Agua"];
 
 export default function SpaPage() {
   const router = useRouter();

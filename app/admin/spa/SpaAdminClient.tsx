@@ -15,7 +15,7 @@ interface Props {
   initialPrograms?: HeroProgram[];
 }
 
-const CATEGORIES = ["Masajes y Terapias", "Rituales de Renovación", "Faciales y Jacuzzi", "Peluquería y Manicure", "Circuitos de Agua"];
+const CATEGORIES = ["Masajes y terapias", "Rituales de Renovación Corporal", "Tratamientos Faciales y Jacuzzi", "Peluquería y Manicure", "Circuitos de Agua"];
 
 function ServiceModal({ item, onSave, onClose }: { item: Partial<Service>; onSave: (data: Partial<Service>) => void; onClose: () => void }) {
   const [form, setForm] = useState({ ...item });
