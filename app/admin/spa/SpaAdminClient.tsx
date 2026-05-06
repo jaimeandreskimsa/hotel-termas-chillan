@@ -13,6 +13,7 @@ interface Props {
   initialSchedules: Schedule[];
   initialClasses: GymClass[];
   initialPrograms?: HeroProgram[];
+  initialReglamento?: string;
 }
 
 const CATEGORIES = ["Masajes y terapias", "Rituales de Renovación Corporal", "Tratamientos Faciales y Jacuzzi", "Peluquería y Manicure", "Circuitos de Agua"];
@@ -87,7 +88,7 @@ function GymModal({ item, onSave, onClose }: { item: Partial<GymClass>; onSave: 
   );
 }
 
-export default function SpaAdminClient({ initialServices, initialSchedules, initialClasses, initialPrograms = [] }: Props) {
+export default function SpaAdminClient({ initialServices, initialSchedules, initialClasses, initialPrograms = [], initialReglamento = "" }: Props) {
   const [tab, setTab] = useState<"spa" | "gym">("spa");
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
   const [services, setServices] = useState(initialServices);
@@ -97,6 +98,9 @@ export default function SpaAdminClient({ initialServices, initialSchedules, init
   const [editingClass, setEditingClass] = useState<Partial<GymClass> | null>(null);
   const [saving, setSaving] = useState(false);
   const [query, setQuery] = useState("");
+  const [reglamento, setReglamento] = useState(initialReglamento);
+  const [savingReglamento, setSavingReglamento] = useState(false);
+  const [reglamentoSaved, setReglamentoSaved] = useState(false);
 
   // Hero images
   const spaHeroRecord = initialPrograms.find(p => p.type === "hero_spa");
@@ -185,6 +189,14 @@ export default function SpaAdminClient({ initialServices, initialSchedules, init
     setClasses(c => c.filter(x => x.id !== id));
   };
 
+  const handleSaveReglamento = async () => {
+    setSavingReglamento(true);
+    await fetch("/api/admin/spa/reglamento", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ reglamento }) });
+    setSavingReglamento(false);
+    setReglamentoSaved(true);
+    setTimeout(() => setReglamentoSaved(false), 2500);
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-[22px] font-bold text-gray-900 mb-6">Spa & Gimnasio</h1>
@@ -233,6 +245,31 @@ export default function SpaAdminClient({ initialServices, initialSchedules, init
                   <button onClick={() => handleScheduleSave(s)} className="bg-[#1B4332] text-white px-3 py-1.5 rounded-lg text-[12px] font-medium">Guardar</button>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Reglamento */}
+          <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm mb-5">
+            <h2 className="font-semibold text-gray-900 mb-3">Reglamento de Seguridad e Higiene</h2>
+            <textarea
+              rows={14}
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-[13px] resize-y outline-none focus:border-[#1B4332]"
+              placeholder="Pega aquí el texto del reglamento..."
+              value={reglamento}
+              onChange={e => setReglamento(e.target.value)}
+            />
+            <div className="flex items-center justify-between mt-3">
+              {reglamentoSaved && <p className="text-green-600 text-[12px]">✓ Guardado</p>}
+              <div className="ml-auto">
+                <button
+                  onClick={handleSaveReglamento}
+                  disabled={savingReglamento}
+                  className="flex items-center gap-2 bg-[#1B4332] text-white px-4 py-2 rounded-xl text-[13px] font-medium disabled:opacity-60"
+                >
+                  {savingReglamento ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                  Guardar reglamento
+                </button>
+              </div>
             </div>
           </div>
 

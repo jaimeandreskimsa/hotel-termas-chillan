@@ -15,9 +15,12 @@ export default function SpaPage() {
   const [services, setServices] = useState<SpaService[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [heroImg, setHeroImg] = useState("/images/spa.jpg");
+  const [reglamento, setReglamento] = useState("");
+  const [reglamentoOpen, setReglamentoOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/spa/services").then(r => r.json()).then(d => setServices(d.services ?? []));
+    fetch("/api/spa/reglamento").then(r => r.json()).then(d => setReglamento(d.reglamento ?? ""));
     fetch("/api/spa/schedules").then(r => r.json()).then(d => setSchedules(d.schedules ?? []));
     fetch("/api/familia").then(r => r.json()).then(d => {
       const hero = (d.programs ?? []).find((p: { type: string; image: string | null }) => p.type === "hero_spa");
@@ -106,6 +109,28 @@ export default function SpaPage() {
           </div>
         )) : (
           <p className="text-[#9B9280] text-center py-8 text-[14px]">Cargando servicios...</p>
+        )}
+
+        {/* Reglamento */}
+        {reglamento && (
+          <div className="mt-4 bg-[#FFFDF6] rounded-2xl border border-[#EDE6D8] overflow-hidden">
+            <button
+              onClick={() => setReglamentoOpen(o => !o)}
+              className="w-full flex items-center justify-between px-4 py-3 text-left"
+            >
+              <span className="font-playfair font-bold text-[#3D2B1F] text-[18px]">Reglamento de Seguridad e Higiene</span>
+              <i className={`fi-rs-angle-${reglamentoOpen ? "up" : "down"} text-[#3D2B1F]`} style={{ fontSize: 14 }} />
+            </button>
+            {reglamentoOpen && (
+              <div className="px-4 pb-4 border-t border-[#EDE6D8]">
+                {reglamento.split("\n").map((line, i) => (
+                  line.trim() ? (
+                    <p key={i} className="text-[#3D2B1F] text-[13px] leading-relaxed mt-2">{line}</p>
+                  ) : <div key={i} className="mt-1" />
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
 

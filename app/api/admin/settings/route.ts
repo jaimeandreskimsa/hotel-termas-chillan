@@ -5,7 +5,7 @@ import { systemSettings } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { logAction } from "@/lib/logger";
 
-const ALLOWED_KEYS = ["deepl_api_key", "deepl_plan", "translation_enabled"];
+const ALLOWED_KEYS = ["deepl_api_key", "deepl_plan", "translation_enabled", "spa_reglamento"];
 
 async function getSuperadminSession() {
   const session = await auth();
