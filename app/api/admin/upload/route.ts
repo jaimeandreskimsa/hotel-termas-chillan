@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -22,14 +27,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "El archivo supera los 15 MB" }, { status: 400 });
   }
 
-  const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : file.type === "image/gif" ? "gif" : "jpg";
-  const filename = `act-${Date.now()}.${ext}`;
-  const dir = path.join(process.cwd(), "public", "images");
-  await mkdir(dir, { recursive: true });
-  const dest = path.join(dir, filename);
-
   const bytes = await file.arrayBuffer();
-  await writeFile(dest, Buffer.from(bytes));
+  const buffer = Buffer.from(bytes);
 
-  return NextResponse.json({ url: `/images/${filename}` });
+  const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      { folder: "hotel-termas", resource_type: "image" },
+      (error, result) => {
+        if (error || !result) return reject(error ?? new Error("Upload failed"));
+        resolve(result);
+      }
+    ).end(buffer);
+  });
+
+  return NextResponse.json({ url: result.secure_url });
 }
