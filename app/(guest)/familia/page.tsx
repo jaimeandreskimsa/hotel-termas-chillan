@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
 
@@ -76,14 +76,34 @@ function ProgramCard({ program, fallbackImage }: { program: Program; fallbackIma
 }
 
 function ProgramSlider({ programs, fallbackImage }: { programs: Program[]; fallbackImage: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const scroll = (dir: "left" | "right") => {
+    if (!ref.current) return;
+    ref.current.scrollBy({ left: dir === "right" ? 360 : -360, behavior: "smooth" });
+  };
   return (
-    <div className="md:max-w-4xl md:mx-auto">
+    <div className="md:max-w-4xl md:mx-auto md:px-14 relative">
+      <button
+        onClick={() => scroll("left")}
+        className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-white shadow-md text-[#1B4332] hover:bg-[#f0ebe3] transition"
+        aria-label="Anterior"
+      >
+        <i className="fi-rs-angle-left" style={{ fontSize: 16 }} />
+      </button>
       <div
-        className="flex overflow-x-auto no-scrollbar gap-4 px-[9%] py-4"
+        ref={ref}
+        className="flex overflow-x-auto no-scrollbar gap-4 px-[9%] md:px-0 py-4"
         style={{ scrollSnapType: "x mandatory" }}
       >
         {programs.map((p) => <ProgramCard key={p.id} program={p} fallbackImage={fallbackImage} />)}
       </div>
+      <button
+        onClick={() => scroll("right")}
+        className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-white shadow-md text-[#1B4332] hover:bg-[#f0ebe3] transition"
+        aria-label="Siguiente"
+      >
+        <i className="fi-rs-angle-right" style={{ fontSize: 16 }} />
+      </button>
     </div>
   );
 }
