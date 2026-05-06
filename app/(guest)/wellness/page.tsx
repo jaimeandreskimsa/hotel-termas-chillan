@@ -20,7 +20,7 @@ const sections = [
 
 export default function WellnessPage() {
   return (
-    <div className="min-h-svh bg-[#F5F0E8]">
+    <div className="min-h-svh bg-[#FFFBF3]">
       <Header />
       <div className="pt-16 page-pb">
         <div className="px-5 py-6">

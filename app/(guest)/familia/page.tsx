@@ -38,7 +38,7 @@ function ProgramCard({ program, fallbackImage }: { program: Program; fallbackIma
   const bullets = extractBullets(program.description);
   const img = program.image ?? fallbackImage;
   return (
-    <div className="shrink-0 w-[82vw] max-w-[340px] bg-white rounded-2xl overflow-hidden shadow-sm snap-center">
+    <div className="shrink-0 w-[82vw] max-w-[340px] bg-[#F3EDE4] rounded-2xl overflow-hidden shadow-sm snap-center">
       <div className="relative h-[245px] w-full bg-gray-200">
         <img src={img} alt={program.name} className="absolute inset-0 w-full h-full object-cover" />
         {program.schedule && (
@@ -110,10 +110,10 @@ export default function FamiliaPage() {
   const catGuarderiaImg = programs.find(p => p.type === "cat_guarderia")?.image ?? "/images/guarderia.jpg";
 
   return (
-    <div className="min-h-svh bg-[#F5F0E8]">
+    <div className="min-h-svh bg-[#FFFBF3]">
       <Header />
 
-      <div className="pt-14">
+      <div className={selected ? "" : "pt-14"}>
         {!selected ? (
           /* ── List view ── */
           <div className="px-4 pt-8 pb-24 md:pb-12 md:max-w-2xl md:mx-auto">
@@ -202,7 +202,7 @@ export default function FamiliaPage() {
         ) : (
           /* ── Guardería detail ── */
           <div className="pb-24 md:pb-12">
-            {/* Hero — full width */}
+            {/* Hero */}
             <div className="relative overflow-hidden w-full" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
               <img src={catGuarderiaImg} alt="Guardería" className="absolute inset-0 w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/40" />
@@ -210,34 +210,48 @@ export default function FamiliaPage() {
                 <h2 className="font-playfair text-white font-bold text-center drop-shadow-lg" style={{ fontSize: 40, lineHeight: 1 }}>Guardería</h2>
               </div>
               <div className="absolute bottom-6 left-0 right-0 flex justify-center">
-                <button onClick={() => setSelected(null)} className="bg-[#1B4332] text-white text-[14px] font-semibold px-6 py-2 rounded-full active:opacity-80">Volver</button>
+                <button onClick={() => setSelected(null)} className="bg-[#1B4332] text-white text-[14px] font-semibold px-5 py-2 rounded-full active:opacity-80 flex items-center gap-1.5">
+                  <i className="fi-ts-angle-left" style={{ fontSize: 12 }} /> Volver
+                </button>
               </div>
             </div>
 
-            <div className="pt-4 md:max-w-4xl md:mx-auto">
-              {guarderiaPrograms.length > 0 ? (
-                <div>
-                  <h3 className="font-playfair font-bold text-center px-4 mt-2 mb-1" style={{ fontSize: 32, lineHeight: 1, color: '#54432B' }}>
-                    Programas
-                  </h3>
-                  <ProgramSlider programs={guarderiaPrograms} fallbackImage={catGuarderiaImg} />
-                </div>
-              ) : (
-                <p className="text-[#9B9280] text-center py-10 text-[14px] px-4">Próximamente disponible</p>
-              )}
+            <div className="px-5 pt-5 max-w-md mx-auto">
+              {/* Horarios */}
+              {guarderiaPrograms[0]?.schedule && (() => {
+                const parts = guarderiaPrograms[0].schedule!.split('|').map(s => s.trim());
+                return (
+                  <div className="mb-4">
+                    <p style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 20, lineHeight: 1, color: "#54432B" }} className="mb-2">Horarios:</p>
+                    {parts.map((p, i) => (
+                      <p key={i} style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 14, color: "#3D2B1F", lineHeight: 1.6 }}>
+                        <strong>{p.split(':')[0]}:</strong> {p.split(':').slice(1).join(':').trim()}
+                      </p>
+                    ))}
+                  </div>
+                );
+              })()}
+
+              {/* Info note */}
+              <div className="flex items-center gap-2 pb-4 mb-4" style={{ borderBottom: "1px solid #E8DDD0" }}>
+                <i className="fi-ts-info" style={{ fontSize: 13, color: "#D4722A" }} />
+                <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 13, color: "#9B9280" }}>
+                  Para más información, acércate al mesón de recepción
+                </span>
+              </div>
 
               {/* Reglamento */}
-              <div className="px-5 mt-4 mb-6">
-                <div className="bg-[#FFF8F0] rounded-2xl p-4 border border-[#F0DCC0] flex gap-3">
-                  <i className="fi-ts-info text-[#D4722A] shrink-0 mt-0.5" style={{ fontSize: 16 }} />
-                  <div>
-                    <p className="text-[#3D2B1F] font-semibold text-[13px] mb-1">Reglamento Guardería</p>
-                    <p className="text-[#7B6354] text-[12px] leading-relaxed whitespace-pre-line">
-                      {reglamento?.description ?? "Servicio para niños/as de 3 a 7 años con control de esfínter. Menores de 3 años deben estar siempre con un adulto.\nEl ingreso y retiro siempre debe ser con un adulto responsable. Se debe firmar ingreso y entregar información de salud y alergias."}
-                    </p>
+              {guarderiaPrograms[0]?.description && (
+                <div>
+                  <h3 style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 32, lineHeight: 1, color: "#54432B", textAlign: "center" }} className="mb-4">
+                    Reglamento
+                  </h3>
+                  <div style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 14, color: "#3D2B1F", lineHeight: 1.65 }}
+                    className="whitespace-pre-line">
+                    {guarderiaPrograms[0].description}
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         )}

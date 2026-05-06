@@ -100,7 +100,7 @@ export default function HabitacionPage() {
       { key: "productos"    as const, label: "Productos",    img: navImgs.img_productos },
     ];
     return (
-      <div className="min-h-svh bg-[#F5F0E8]">
+      <div className="min-h-svh bg-[#FFFBF3]">
         <Header />
         <div className="pt-14 px-4 pb-28 md:pb-12 md:max-w-3xl md:mx-auto">
           <h1 className="text-[#3D2B1F] text-center mt-12 mb-6" style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 40, lineHeight: 1 }}>Mi Habitación</h1>
@@ -127,9 +127,9 @@ export default function HabitacionPage() {
   // ── HOUSEKEEPING ──────────────────────────────────────────────────────
   if (view.type === "housekeeping") {
     return (
-      <div className="min-h-svh bg-[#F5F0E8]">
+      <div className="min-h-svh bg-[#FFFBF3]">
         <Header />
-        <div className="pt-14 pb-28">
+        <div className="pb-28">
           <SubHero title="Housekeeping" imageSrc={heroImg} onBack={goBack} />
           <div className="px-4 py-5 md:max-w-3xl md:mx-auto">
             {housekeepingItems.length > 0 ? (
@@ -149,13 +149,28 @@ export default function HabitacionPage() {
             {lavanderiaItems.length > 0 && (
               <>
                 <hr className="border-[#E0D8CC] my-4" />
-                <h2 className="text-[#1B4332] text-center mb-3" style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 32, lineHeight: 1 }}>Lavandería</h2>
-                {lavanderiaItems.map(item => (
-                  <div key={item.id} className="bg-white rounded-2xl border border-[#EDE6D8] shadow-sm px-4 py-4 mb-3">
-                    <h3 className="font-semibold text-[#1B4332] text-[14px] mb-1.5">{item.title}</h3>
-                    <p className="text-[#6B6B6B] text-[13px] leading-relaxed whitespace-pre-line">{item.content}</p>
-                  </div>
-                ))}
+                <h2 style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 32, lineHeight: 1, color: '#54432B', textAlign: 'center', letterSpacing: 0 }} className="mb-3">Lavandería</h2>
+                {lavanderiaItems.map(item => {
+                  const isHeader = item.title === "Lavandería";
+                  const lines = (item.content ?? "").split("\n").filter(l => l.trim());
+                  return (
+                    <div key={item.id} className="bg-[#F3EDE4] rounded-2xl border border-[#EDE6D8] shadow-sm px-4 py-4 mb-3">
+                      <h3 style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 20, lineHeight: 1, color: "#54432B" }} className="mb-2">{item.title}</h3>
+                      {isHeader ? (
+                        <p className="text-[#6B6B6B] text-[13px] leading-relaxed">{item.content}</p>
+                      ) : (
+                        <ul className="flex flex-col gap-1">
+                          {lines.map((l, i) => (
+                            <li key={i} className="flex items-center gap-2 text-[#6B6B6B] text-[13px]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#1B4332]/40 shrink-0" />
+                              {l}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  );
+                })}
               </>
             )}
           </div>
@@ -168,9 +183,9 @@ export default function HabitacionPage() {
   // ── INFORMACIÓN MENU ──────────────────────────────────────────────────
   if (view.type === "info_menu") {
     return (
-      <div className="min-h-svh bg-[#F5F0E8]">
+      <div className="min-h-svh bg-[#FFFBF3]">
         <Header />
-        <div className="pt-14 pb-28">
+        <div className="pb-28">
           <SubHero title="Información" imageSrc={navImgs.img_informacion} onBack={goBack} />
           <div className="px-4 py-5 flex flex-col gap-3 md:max-w-3xl md:mx-auto">
             {INFO_SECTIONS.map(sec => (
@@ -194,13 +209,13 @@ export default function HabitacionPage() {
     const sectionImgKey = section === "caja" ? "img_caja" : section === "protocolo" ? "img_protocolo" : "img_emergencia";
     const sectionHeroImg = infoImgs[sectionImgKey as keyof typeof infoImgs];
     return (
-      <div className="min-h-svh bg-[#F5F0E8]">
+      <div className="min-h-svh bg-[#FFFBF3]">
         <Header />
-        <div className="pt-14 pb-28">
+        <div className="pb-28">
           {isEmergencia ? (
-            <div className="relative w-full flex flex-col items-center justify-center rounded-b-3xl" style={{ height: 378, background: "linear-gradient(180deg, #C0553A 0%, #D4722A 100%)" }}>
+            <div className="relative w-full flex flex-col items-center justify-center rounded-b-3xl" style={{ height: 378, background: "linear-gradient(119.4deg, #AF4E2B 8.15%, #DB7C59 54.08%, #AF4E2B 100%)" }}>
               <h1 className="text-white drop-shadow-lg mb-6" style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 40, lineHeight: 1, textAlign: "center" }}>{label}</h1>
-              <button onClick={goBack} className="bg-white/90 text-[#B85C45] px-5 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1 shadow-sm">
+              <button onClick={goBack} className="bg-white/90 text-[#DB7C59] px-5 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1 shadow-sm">
                 <ChevronLeft size={14} /> Volver
               </button>
             </div>
@@ -209,32 +224,37 @@ export default function HabitacionPage() {
           )}
           <div className="px-4 py-5 md:max-w-3xl md:mx-auto">
             {isEmergencia ? (
-              sectionItems.length > 0 ? (
-                <div className="flex flex-col items-center gap-5 text-center">
-                  {sectionItems.map(item => (
-                    <div key={item.id} className="flex flex-col items-center gap-3">
-                      <p className="text-[#4A4A4A] text-[14px] leading-relaxed">{item.title}</p>
-                      <a href={`tel:${item.content.replace(/\s/g, "")}`} className="inline-block bg-[#B85C45] text-white font-semibold text-[16px] px-8 py-3 rounded-full active:opacity-80">{item.content}</a>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-5 text-center">
-                  <p className="text-[#4A4A4A] text-[14px] leading-relaxed">Si necesitas atención médica inmediata,<br />comúnicatе con la recepción llamando al:</p>
-                  <a href="tel:3500" className="inline-block bg-[#B85C45] text-white font-semibold text-[16px] px-10 py-3 rounded-full active:opacity-80">3500</a>
-                  <p className="text-[#4A4A4A] text-[14px] leading-relaxed">Si te encuentras fuera del Hotel, llama al:</p>
-                  <a href="tel:+56223223500" className="inline-block bg-[#B85C45] text-white font-semibold text-[16px] px-8 py-3 rounded-full active:opacity-80">+562 2322 3500</a>
-                </div>
-              )
+              <div className="flex flex-col items-center gap-5 text-center">
+                <p className="text-[#4A4A4A] text-[14px] leading-relaxed">
+                  Si necesitas atención médica inmediata,<br />
+                  comunícate con la recepción llamando<br />desde tu habitación al:
+                </p>
+                <a href="tel:3500" className="inline-block bg-[#DB7C59] text-white font-semibold text-[16px] px-10 py-3 rounded-full active:opacity-80">3500</a>
+                <p className="text-[#4A4A4A] text-[14px] leading-relaxed">Si te encuentras fuera del Hotel, llama al:</p>
+                <a href="tel:+56223223500" className="inline-block bg-[#DB7C59] text-white font-semibold text-[16px] px-8 py-3 rounded-full active:opacity-80">+562 2322 3500</a>
+              </div>
             ) : (
               sectionItems.length > 0 ? (
                 <div className="flex flex-col gap-5">
-                  {sectionItems.map(item => (
-                    <div key={item.id}>
-                      <h3 className="font-semibold text-[#1B4332] text-[15px] mb-1">{item.title}</h3>
-                      <p className="text-[#6B6B6B] text-[13px] leading-relaxed whitespace-pre-line">{item.content}</p>
-                    </div>
-                  ))}
+                  {sectionItems.map(item => {
+                    const isZona = /^Zona\s+[A-Z]/i.test(item.title);
+                    return (
+                      <div key={item.id}>
+                        {section === "protocolo" ? (
+                          isZona ? (
+                            <h3 style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 20, lineHeight: 1, color: "#54432B" }} className="mb-1">{item.title}</h3>
+                          ) : (
+                            <h3 style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 32, lineHeight: 1, color: "#54432B", textAlign: "center" }} className="mb-3">{item.title}</h3>
+                          )
+                        ) : section === "caja" ? (
+                          <h3 style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 32, lineHeight: 1, color: "#54432B", textAlign: "center" }} className="mb-3">{item.title}</h3>
+                        ) : (
+                          <h3 className="font-semibold text-[#1B4332] text-[15px] mb-1">{item.title}</h3>
+                        )}
+                        <p className="text-[#6B6B6B] text-[13px] leading-relaxed whitespace-pre-line">{item.content}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-[#9B9280] text-center py-10 text-[14px]">Sin información disponible aún.</p>
@@ -249,20 +269,20 @@ export default function HabitacionPage() {
 
   // ── PRODUCTOS ─────────────────────────────────────────────────────────
   return (
-    <div className="min-h-svh bg-[#F5F0E8]">
+    <div className="min-h-svh bg-[#FFFBF3]">
       <Header />
-      <div className="pt-14 pb-28">
+      <div className="pb-28">
         <SubHero title="Productos" imageSrc={navImgs.img_productos} onBack={goBack} />
         <div className="px-4 py-5 md:max-w-3xl md:mx-auto">
           {/* ── Lavandería ── */}
           {allProductCats.length > 0 && (
             <>
-              <p className="text-[#6B6B6B] text-[14px] leading-relaxed text-center mb-5">Para su comodidad y ante cualquier olvido, el hotel dispone de una selección de artículos esenciales que puede adquirir directamente en el hotel.</p>
+              <p className="text-center mb-5" style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontWeight: 400, fontSize: 16, lineHeight: 1, color: "#54432B" }}>Para su comodidad y ante cualquier olvido, el hotel dispone de una selección de artículos esenciales que puede adquirir directamente en el hotel.</p>
               <div className="flex flex-col gap-2 mb-6">
                 {allProductCats.map(cat => (
-                  <div key={cat} className="bg-white rounded-xl border border-[#EDE6D8] overflow-hidden shadow-sm">
+                  <div key={cat} className="bg-[#F3EDE4] rounded-xl border border-[#EDE6D8] overflow-hidden shadow-sm">
                     <button onClick={() => setOpenAccordion(openAccordion === cat ? null : cat)} className="w-full flex justify-between items-center px-4 py-3.5">
-                      <span className="text-[#3D2B1F] text-[14px] font-medium text-left">{cat}</span>
+                      <span style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 20, lineHeight: 1, color: "#54432B" }} className="text-left">{cat}</span>
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="text-[#9B9280] text-[12px]">{productsByCategory[cat]?.length} artículos</span>
                         {openAccordion === cat ? <ChevronUp size={15} className="text-gray-400" /> : <ChevronDown size={15} className="text-gray-400" />}
@@ -272,8 +292,8 @@ export default function HabitacionPage() {
                       <div className="border-t border-[#EDE6D8] px-4 py-3 flex flex-col gap-2.5">
                         {productsByCategory[cat].map(p => (
                           <div key={p.id} className="flex justify-between items-center">
-                            <span className="text-[#6B6B6B] text-[13px]">{p.name}</span>
-                            {p.price && <span className="text-[#1B4332] font-semibold text-[12px]">{p.price}</span>}
+                            <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontWeight: 400, fontSize: 15, lineHeight: 2, color: "#54432B" }}>{p.name}</span>
+                            {p.price && <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontWeight: 400, fontSize: 15, lineHeight: 2, color: "#DBA33B" }}>{p.price}</span>}
                           </div>
                         ))}
                       </div>

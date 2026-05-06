@@ -51,7 +51,7 @@ function ActivityCard({ a }: { a: Activity }) {
   const schedule = extractField(a.description, "Horario") ?? extractField(a.description, "Duración");
 
   return (
-    <div className="shrink-0 w-[335px] h-[430px] bg-white rounded-3xl overflow-hidden shadow-sm snap-center flex flex-col border border-[#E0D8CC]">
+    <div className="shrink-0 w-[335px] h-[470px] bg-[#F3EDE4] rounded-3xl overflow-hidden shadow-sm snap-center flex flex-col border border-[#E0D8CC]">
       <div className="w-full h-[252px] relative overflow-hidden bg-[#1B4332] shrink-0">
         {a.image ? (
           <Image src={a.image} alt={a.name} fill className="object-cover" />
@@ -65,8 +65,8 @@ function ActivityCard({ a }: { a: Activity }) {
         )}
       </div>
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-semibold text-[#1B4332] text-[15px] leading-snug mb-2">{a.name}</h3>
-        <p className="text-[#6B6B6B] text-[13px] leading-relaxed line-clamp-3 mb-3">{shortDesc(a.description)}</p>
+        <h3 className="font-playfair font-bold text-[#54432B] text-[24px] leading-none mb-2">{a.name}</h3>
+        <p style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontWeight: 400, fontSize: 16, lineHeight: 1.4, color: "#3F2012" }} className="line-clamp-3 mb-3">{shortDesc(a.description)}</p>
         <div className="flex flex-col gap-1.5 mt-auto">
           {location && (
             <div className="flex items-center gap-1.5 text-[#7B6354]">
@@ -139,6 +139,7 @@ function getWelcome(name: string): string {
 
 export default function HomePage() {
   const router = useRouter();
+  const [ready, setReady] = useState(false);
   const [guestName, setGuestName] = useState("Bienvenido/a");
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -150,6 +151,7 @@ export default function HomePage() {
     if (!stored) { router.replace("/"); return; }
     const { name } = JSON.parse(stored);
     setGuestName(name.split(" ")[0]);
+    setReady(true);
 
     fetch("/api/alerts")
       .then((r) => r.json())
@@ -186,8 +188,10 @@ export default function HomePage() {
   const season = getCurrentSeason();
   const seasonActivities = activities.filter((a) => a.season === season).slice(0, 8);
 
+  if (!ready) return null;
+
   return (
-    <div className="min-h-svh bg-[#F5F0E8]">
+    <div className="min-h-svh bg-[#FFFBF3]">
       <Header />
 
       {/* Hero */}
@@ -297,8 +301,8 @@ export default function HomePage() {
         {/* Experiencias de esta Temporada */}
         {seasonActivities.length > 0 && (
           <div className="mt-7">
-            <p className="font-playfair text-[#3D2B1F] text-[22px] md:text-[28px] font-bold text-center mb-4 px-4">
-              Experiencias de esta Temporada
+            <p className="font-playfair text-[#3D2B1F] text-[32px] font-bold text-center mb-4 px-7 leading-none">
+              Experiencias de<br />esta Temporada
             </p>
             {/* Slider wrapper */}
             <SliderWithArrows>
@@ -319,7 +323,7 @@ export default function HomePage() {
                 <p className="text-[#9B9280] text-[13px] text-center py-4 md:col-span-2">No hay eventos próximos.</p>
               )}
               {upcomingEvents.slice(0, 4).map((ev) => (
-                <div key={ev.id} className="bg-white rounded-2xl overflow-hidden flex shadow-sm">
+                <div key={ev.id} className="bg-[#F3EDE4] rounded-2xl overflow-hidden flex shadow-sm">
                   <div className="w-[72px] shrink-0 flex flex-col items-center justify-center py-4 text-white" style={{ background: "linear-gradient(180deg, #215732 0%, #47835A 100%)" }}>
                     <span className="text-[28px] font-bold leading-none">{ev.day}</span>
                     <span className="text-[13px] font-semibold mt-0.5">{ev.month}</span>

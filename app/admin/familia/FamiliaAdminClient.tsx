@@ -73,35 +73,73 @@ function CatImageUpload({ label, type, programs, setPrograms, fallback }: { labe
   );
 }
 
+function GuarderiaSection({ programs, setPrograms }: { programs: Program[]; setPrograms: React.Dispatch<React.SetStateAction<Program[]>> }) {
+  const guarderiaRecord = programs.find(p => p.type === "guarderia");
+  const [schedule, setSchedule] = useState(guarderiaRecord?.schedule ?? "");
+  const [reglamento, setReglamento] = useState(guarderiaRecord?.description ?? "");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    if (guarderiaRecord) {
+      const res = await fetch("/api/admin/familia", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: guarderiaRecord.id, type: "guarderia", name: "Guardería", schedule, description: reglamento }) });
+      const json = await res.json();
+      setPrograms(s => s.map(x => x.id === json.program.id ? json.program : x));
+    } else {
+      const res = await fetch("/api/admin/familia", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "guarderia", name: "Guardería", schedule, description: reglamento, order: 0 }) });
+      const json = await res.json();
+      setPrograms(s => [...s, json.program]);
+    }
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
+  return (
+    <div className="mb-7">
+      <h2 className="font-semibold text-gray-600 text-[13px] uppercase tracking-wide mb-3">Guardería</h2>
+      <div className="flex flex-col gap-3 bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+        <CatImageUpload label="Hero Guardería" type="cat_guarderia" programs={programs} setPrograms={setPrograms} fallback="/images/guarderia.jpg" />
+        <div>
+          <label className="text-[12px] font-semibold text-gray-600 mb-1 block">Horarios <span className="text-gray-400 font-normal">(separar días con |, ej: Lun–Sáb: 08:30–18:30 | Dom: 08:30–16:30)</span></label>
+          <input
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[14px] outline-none focus:border-[#1B4332]"
+            value={schedule}
+            onChange={e => setSchedule(e.target.value)}
+            placeholder="Lun–Sáb: 08:30–18:30 | Dom: 08:30–16:30"
+          />
+        </div>
+        <div>
+          <label className="text-[12px] font-semibold text-gray-600 mb-1 block">Reglamento</label>
+          <textarea
+            rows={8}
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[14px] resize-y outline-none focus:border-[#1B4332]"
+            value={reglamento}
+            onChange={e => setReglamento(e.target.value)}
+            placeholder="Escribe el reglamento de la guardería..."
+          />
+        </div>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="self-end flex items-center gap-2 bg-[#1B4332] text-white px-4 py-2 rounded-xl text-[13px] font-medium disabled:opacity-60"
+        >
+          {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+          {saved ? "✓ Guardado" : "Guardar Guardería"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function FamiliaAdminClient({ initialPrograms }: { initialPrograms: Program[] }) {
   const [programs, setPrograms] = useState(initialPrograms);
   const [editing, setEditing] = useState<Partial<Program> | null>(null);
   const [query, setQuery] = useState("");
 
-  // Reglamento state
-  const reglamentoRecord = programs.find(p => p.type === "reglamento");
-  const [reglamentoText, setReglamentoText] = useState(reglamentoRecord?.description ?? "");
-  const [savingReglamento, setSavingReglamento] = useState(false);
-  const [reglamentoSaved, setReglamentoSaved] = useState(false);
-
-  const handleSaveReglamento = async () => {
-    setSavingReglamento(true);
-    if (reglamentoRecord) {
-      const res = await fetch("/api/admin/familia", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: reglamentoRecord.id, type: "reglamento", name: "Reglamento Guardería", description: reglamentoText }) });
-      const json = await res.json();
-      setPrograms(s => s.map(x => x.id === json.program.id ? json.program : x));
-    } else {
-      const res = await fetch("/api/admin/familia", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "reglamento", name: "Reglamento Guardería", description: reglamentoText, order: 99 }) });
-      const json = await res.json();
-      setPrograms(s => [...s, json.program]);
-    }
-    setSavingReglamento(false);
-    setReglamentoSaved(true);
-    setTimeout(() => setReglamentoSaved(false), 2500);
-  };
-
   const byType = programs
-    .filter(p => !['reglamento', 'cat_ninos', 'cat_guarderia'].includes(p.type))
+    .filter(p => !['reglamento', 'cat_ninos', 'cat_guarderia', 'guarderia'].includes(p.type))
     .reduce<Record<string, Program[]>>((acc, p) => {
       if (!acc[p.type]) acc[p.type] = [];
       acc[p.type].push(p);
@@ -127,14 +165,14 @@ export default function FamiliaAdminClient({ initialPrograms }: { initialProgram
     <div className="p-6">
       <h1 className="text-[22px] font-bold text-gray-900 mb-6">Familia y Niños</h1>
 
-      {/* ── Imágenes de categorías ── */}
+      {/* ── Imagen categoría Niños ── */}
       <div className="mb-7">
-        <h2 className="font-semibold text-gray-600 text-[13px] uppercase tracking-wide mb-3">Imágenes de Categorías</h2>
-        <div className="flex flex-col gap-2">
-          <CatImageUpload label="Niños" type="cat_ninos" programs={programs} setPrograms={setPrograms} fallback="/images/ninos.jpg" />
-          <CatImageUpload label="Guardería" type="cat_guarderia" programs={programs} setPrograms={setPrograms} fallback="/images/guarderia.jpg" />
-        </div>
+        <h2 className="font-semibold text-gray-600 text-[13px] uppercase tracking-wide mb-3">Imagen Categoría Niños</h2>
+        <CatImageUpload label="Niños" type="cat_ninos" programs={programs} setPrograms={setPrograms} fallback="/images/ninos.jpg" />
       </div>
+
+      {/* ── Guardería ── */}
+      <GuarderiaSection programs={programs} setPrograms={setPrograms} />
 
       <button onClick={() => setEditing({ type: "club", active: true })} className="flex items-center gap-2 bg-[#1B4332] text-white px-4 py-2 rounded-xl text-[13px] font-medium mb-5">
         <Plus size={15} /> Agregar programa
@@ -180,26 +218,16 @@ export default function FamiliaAdminClient({ initialPrograms }: { initialProgram
           item={editing}
           onSave={handleSave}
           onClose={() => setEditing(null)}
-          reglamentoText={reglamentoText}
-          onReglamentoChange={setReglamentoText}
-          onSaveReglamento={handleSaveReglamento}
-          reglamentoSaving={savingReglamento}
-          reglamentoSaved={reglamentoSaved}
         />
       )}
     </div>
   );
 }
 
-function EditModal({ item, onSave, onClose, reglamentoText, onReglamentoChange, onSaveReglamento, reglamentoSaving, reglamentoSaved }: {
+function EditModal({ item, onSave, onClose }: {
   item: Partial<Program>;
   onSave: (d: Partial<Program>) => void;
   onClose: () => void;
-  reglamentoText?: string;
-  onReglamentoChange?: (v: string) => void;
-  onSaveReglamento?: () => void;
-  reglamentoSaving?: boolean;
-  reglamentoSaved?: boolean;
 }) {
   const [form, setForm] = useState({ ...item });
   const [uploading, setUploading] = useState(false);
@@ -263,28 +291,14 @@ function EditModal({ item, onSave, onClose, reglamentoText, onReglamentoChange, 
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
           </div>
 
-          {/* Reglamento — only for guarderia */}
-          {(form.type === "guarderia") && (
-            <div>
-              <label className="text-[12px] font-semibold text-gray-600 mb-1 block">Reglamento Guardería</label>
-              <textarea
-                rows={5}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[14px] resize-none"
-                placeholder="Escribe el reglamento aquí..."
-                value={reglamentoText ?? ""}
-                onChange={e => onReglamentoChange?.(e.target.value)}
-              />
-            </div>
-          )}
         </div>
         <div className="flex gap-3 mt-5">
           <button onClick={onClose} className="flex-1 border border-gray-200 rounded-xl py-2.5 text-[14px] text-gray-600">Cancelar</button>
           <button
-            onClick={() => { onSave(form); if (form.type === "guarderia") onSaveReglamento?.(); }}
+            onClick={() => onSave(form)}
             className="flex-1 bg-[#1B4332] text-white rounded-xl py-2.5 text-[14px] font-medium flex items-center justify-center gap-2"
           >
-            {reglamentoSaving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-            {reglamentoSaved ? "✓ Guardado" : "Guardar"}
+            <Save size={15} /> Guardar
           </button>
         </div>
       </div>

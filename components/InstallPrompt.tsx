@@ -14,6 +14,13 @@ export default function InstallPrompt() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // In development, unregister all service workers to avoid stale cache issues
+    if (process.env.NODE_ENV === "development" && "serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+    }
+  }, []);
+
+  useEffect(() => {
     // Don't show if already installed (standalone mode)
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||

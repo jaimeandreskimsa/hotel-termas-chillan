@@ -28,49 +28,32 @@ export default function SpaPage() {
   const filtered = services.filter(s => s.category === activeCategory);
 
   return (
-    <div className="min-h-svh bg-[#F5F0E8]">
+    <div className="min-h-svh bg-[#FFFBF3]">
       <Header />
 
-      {/* Category tabs — fixed on mobile, static below hero on desktop */}
-      <div className="fixed md:hidden top-[64px] left-0 right-0 z-40 bg-[#1B4332]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
-        <div className="flex gap-2 overflow-x-auto no-scrollbar px-3 py-2">
+      {/* Hero */}
+      <div className="relative overflow-hidden shadow-lg" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('${heroImg}')` }}
+        />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1 className="font-playfair text-white font-bold text-center drop-shadow-lg" style={{ fontSize: 40, lineHeight: 1 }}>Spa Alunco</h1>
+        </div>
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+          <button onClick={() => router.back()} className="bg-[#1B4332] text-white text-[14px] font-semibold px-6 py-2 rounded-full active:opacity-80">Volver</button>
+        </div>
+      </div>
+
+      {/* Category tabs — below hero */}
+      <div className="bg-[#1B4332]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar px-3 py-2 md:justify-center">
           {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all whitespace-nowrap ${activeCategory === cat ? "bg-white text-[#1B4332]" : "text-white/80 hover:text-white"}`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Hero */}
-      <div className="pt-[104px] md:pt-[64px]">
-        <div className="relative overflow-hidden shadow-lg md:rounded-none" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url('${heroImg}')` }}
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <h1 className="font-playfair text-white font-bold text-center drop-shadow-lg" style={{ fontSize: 40, lineHeight: 1 }}>Spa Alunco</h1>
-          </div>
-          <div className="absolute bottom-6 left-0 right-0 flex justify-center">
-            <button onClick={() => router.back()} className="bg-[#1B4332] text-white text-[14px] font-semibold px-6 py-2 rounded-full active:opacity-80">Volver</button>
-          </div>
-        </div>
-      </div>
-
-      {/* Category tabs — desktop only, below hero */}
-      <div className="hidden md:block bg-[#1B4332]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
-        <div className="flex gap-2 overflow-x-auto no-scrollbar px-6 py-3 max-w-7xl mx-auto">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold transition-all whitespace-nowrap ${activeCategory === cat ? "bg-white text-[#1B4332]" : "text-white/80 hover:text-white hover:bg-white/10"}`}
             >
               {cat}
             </button>

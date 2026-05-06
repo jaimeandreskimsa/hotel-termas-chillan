@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   { href: "/actividades", labelKey: "nav.activities",    iconClass: "fi-ts-mountain" },
   { href: "/wellness",    labelKey: "nav.wellness",      iconClass: "fi-ts-hot-tub" },
   { href: "/familia",     labelKey: "nav.family",        iconClass: "fi-ts-family" },
-  { href: "/emergencia",  labelKey: "nav.emergency",     iconClass: "fi-rs-phone-call" },
+  { href: "/emergencia",  labelKey: "nav.emergency",     iconClass: "fi-ts-phone-call" },
 ];
 
 const LANGS: { code: Locale; flag: string; label: string }[] = [
@@ -80,7 +80,7 @@ export default function Header({ transparent = false }: HeaderProps) {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 w-full z-50 ${bg}`}
+        className={`sticky top-0 left-0 right-0 w-full z-50 ${bg}`}
         style={{ boxShadow: transparent ? "none" : "0 2px 8px rgba(0,0,0,0.18)" }}
       >
         {/* ── Mobile header (hidden on md+) ── */}

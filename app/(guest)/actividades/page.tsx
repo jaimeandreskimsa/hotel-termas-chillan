@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
 
@@ -76,7 +76,7 @@ function ActivityCard({ activity, catImage }: { activity: Activity; catImage: st
   const imgSrc = activity.image ?? catImage;
 
   return (
-    <div className="shrink-0 w-[82vw] max-w-[340px] bg-white rounded-2xl overflow-hidden shadow-sm snap-center">
+    <div className="shrink-0 w-[82vw] max-w-[340px] bg-[#F3EDE4] rounded-2xl overflow-hidden shadow-sm snap-center">
       <div className="relative h-[245px] w-full bg-gray-200">
         <img src={imgSrc} alt={activity.name} className="absolute inset-0 w-full h-full object-cover" />
         {activity.price && (
@@ -86,10 +86,10 @@ function ActivityCard({ activity, catImage }: { activity: Activity; catImage: st
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-semibold text-[#1B4332] text-[16px] leading-snug mb-1.5">
+        <h3 className="font-playfair font-bold text-[#54432B] text-[24px] leading-none mb-1.5">
           {activity.name}
         </h3>
-        <p className="text-[#6B6B6B] text-[13px] leading-relaxed mb-3">
+        <p style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontWeight: 400, fontSize: 16, lineHeight: 1.4, color: "#3F2012" }} className="mb-3">
           {shortDesc(activity.description)}
         </p>
         {bullets.length > 0 && (
@@ -113,13 +113,203 @@ function ActivityCard({ activity, catImage }: { activity: Activity; catImage: st
   );
 }
 
-function ActivitySlider({ activities, catImage }: { activities: Activity[]; catImage: string }) {
+function CentroDeSkiView({ onBack, skiActivities }: { onBack: () => void; skiActivities: Activity[] }) {
+  const [weather, setWeather] = useState<{ temp: number; feels: number; humidity: number; wind: number; code: number } | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(
+      "https://api.open-meteo.com/v1/forecast?latitude=-36.908&longitude=-71.432&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&wind_speed_unit=kmh"
+    )
+      .then((r) => r.json())
+      .then((d) => {
+        const c = d.current;
+        setWeather({
+          temp: Math.round(c.temperature_2m),
+          feels: Math.round(c.apparent_temperature),
+          humidity: Math.round(c.relative_humidity_2m),
+          wind: Math.round(c.wind_speed_10m),
+          code: c.weather_code,
+        });
+      })
+      .catch(() => {});
+  }, []);
+
+  function weatherIcon(code: number) {
+    if (code === 0) return "fi-ts-sun";
+    if (code <= 3) return "fi-ts-cloud-sun";
+    if (code <= 49) return "fi-ts-clouds";
+    if (code <= 69) return "fi-ts-cloud-drizzle";
+    if (code <= 79) return "fi-ts-cloud-snow";
+    if (code <= 99) return "fi-ts-cloud-bolt";
+    return "fi-ts-sun";
+  }
+
+  const rentaPorDia = skiActivities.filter((a) => a.category === "SKI – Renta por Día");
+  const rentaSemanal = skiActivities.filter((a) => a.category === "SKI – Renta Semanal");
+  const servicios = skiActivities.filter((a) => a.category === "SKI – Servicios");
+
+  const rows = [
+    { key: "reporte", label: "Reporte de Andariveles y Pistas", href: "https://termaschillan.cl/informacion-centro-de-ski/" },
+    { key: "precios", label: "Precios de Renta y Taller Ski" },
+  ];
+
   return (
-    <div
-      className="flex overflow-x-auto no-scrollbar gap-4 px-[9%] py-4"
-      style={{ scrollSnapType: "x mandatory" }}
-    >
-      {activities.map((a) => <ActivityCard key={a.id} activity={a} catImage={catImage} />)}
+    <div className="pb-24">
+      {/* Hero */}
+      <div className="relative overflow-hidden w-full" style={{ height: 260, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
+        <img src="/images/actividades.jpg" alt="Centro de Ski" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h2 className="font-playfair font-bold text-center drop-shadow-lg" style={{ fontSize: 40, lineHeight: 1, color: "white" }}>
+            Centro de Ski
+          </h2>
+        </div>
+        <div className="absolute bottom-5 left-0 right-0 flex justify-center">
+          <button onClick={onBack} className="bg-[#1B4332] text-white text-[14px] font-semibold px-5 py-2 rounded-full active:opacity-80 flex items-center gap-1.5">
+            <i className="fi-ts-angle-left" style={{ fontSize: 12 }} />
+            Volver
+          </button>
+        </div>
+      </div>
+
+      <div className="px-5 pt-5 max-w-md mx-auto">
+        {/* Description */}
+        <p style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 14, color: "#3D2B1F", lineHeight: 1.55 }} className="mb-3">
+          SKI con más de 35 km de pistas y opciones para todos los niveles. Vive una experiencia en un entorno natural privilegiado.
+        </p>
+
+        {/* Info note */}
+        <div className="flex items-center gap-2 pb-4 mb-4" style={{ borderBottom: "1px solid #E8DDD0" }}>
+          <i className="fi-ts-info" style={{ fontSize: 13, color: "#D4722A" }} />
+          <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 13, color: "#9B9280" }}>
+            Para más información, acércate al mesón de recepción
+          </span>
+        </div>
+
+        {/* Weather widget */}
+        {weather ? (
+          <div className="rounded-2xl p-4 mb-5 flex items-center justify-between" style={{ backgroundColor: "#1B4332" }}>
+            <div>
+              <p style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.65)" }} className="mb-0.5">
+                Clima en Chillán
+              </p>
+              <p className="font-playfair font-bold text-white" style={{ fontSize: 48, lineHeight: 1 }}>
+                {weather.temp}<span style={{ fontSize: 22 }}>°C</span>
+              </p>
+              <div className="flex flex-wrap gap-x-4 gap-y-0.5 mt-2">
+                <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.85)" }}>
+                  Sensación: <strong>{weather.feels}°C</strong>
+                </span>
+                <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.85)" }}>
+                  Humedad: <strong>{weather.humidity}%</strong>
+                </span>
+                <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.85)" }}>
+                  Viento: <strong>{weather.wind} km/h</strong>
+                </span>
+              </div>
+            </div>
+            <div className="w-[52px] h-[52px] rounded-xl bg-white/20 flex items-center justify-center shrink-0 ml-3">
+              <i className={`${weatherIcon(weather.code)} text-white`} style={{ fontSize: 26 }} />
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-2xl mb-5 animate-pulse" style={{ backgroundColor: "#1B4332", height: 100 }} />
+        )}
+
+        {/* Rows */}
+        <div style={{ borderTop: "1px solid #E8DDD0" }}>
+          {rows.map((row, idx) => (
+            <div key={row.key} style={{ borderBottom: "1px solid #E8DDD0" }}>
+              {row.href ? (
+                <a
+                  href={row.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between py-4 active:opacity-60"
+                >
+                  <span className="font-playfair font-bold text-[#54432B]" style={{ fontSize: 18 }}>{row.label}</span>
+                  <i className="fi-ts-angle-right text-[#54432B]" style={{ fontSize: 14 }} />
+                </a>
+              ) : (
+                <>
+                  <button
+                    className="w-full flex items-center justify-between py-4 active:opacity-60"
+                    onClick={() => setExpanded(expanded === row.key ? null : row.key)}
+                  >
+                    <span className="font-playfair font-bold text-[#54432B] text-left" style={{ fontSize: 18 }}>{row.label}</span>
+                    <i className={`fi-ts-angle-${expanded === row.key ? "down" : "right"} text-[#54432B]`} style={{ fontSize: 14 }} />
+                  </button>
+                  {expanded === "precios" && row.key === "precios" && (
+                    <div className="pb-4">
+                      {[
+                        { title: "Renta por Día", items: rentaPorDia },
+                        { title: "Renta Semanal", items: rentaSemanal },
+                        { title: "Servicios", items: servicios },
+                      ].filter((g) => g.items.length > 0).map((group) => (
+                        <div key={group.title} className="mb-4">
+                          <p className="font-playfair font-bold text-[#54432B] mb-2" style={{ fontSize: 15 }}>{group.title}</p>
+                          {group.items.map((item) => (
+                            <div key={item.id} className="flex justify-between items-center py-2" style={{ borderBottom: "1px solid #F0E8DF" }}>
+                              <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 13, color: "#3D2B1F" }}>{item.name}</span>
+                              {item.price && (
+                                <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontSize: 13, fontWeight: 700, color: "#1B4332" }}>{item.price}</span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ActivitySlider({ activities, catImage }: { activities: Activity[]; catImage: string }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  function scroll(dir: "left" | "right") {
+    const el = scrollRef.current;
+    if (!el) return;
+    const cardWidth = el.querySelector<HTMLElement>("[data-card]")?.offsetWidth ?? 340;
+    el.scrollBy({ left: dir === "right" ? cardWidth + 16 : -(cardWidth + 16), behavior: "smooth" });
+  }
+
+  return (
+    <div className="relative">
+      {/* Desktop arrows */}
+      <button
+        onClick={() => scroll("left")}
+        className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-md border border-gray-100 items-center justify-center text-[#54432B] hover:bg-[#F3EDE4] transition-colors"
+        aria-label="Anterior"
+      >
+        <i className="fi-ts-angle-left" style={{ fontSize: 16 }} />
+      </button>
+      <button
+        onClick={() => scroll("right")}
+        className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-md border border-gray-100 items-center justify-center text-[#54432B] hover:bg-[#F3EDE4] transition-colors"
+        aria-label="Siguiente"
+      >
+        <i className="fi-ts-angle-right" style={{ fontSize: 16 }} />
+      </button>
+
+      <div
+        ref={scrollRef}
+        className="flex overflow-x-auto no-scrollbar gap-4 px-[9%] py-4"
+        style={{ scrollSnapType: "x mandatory" }}
+      >
+        {activities.map((a) => (
+          <div key={a.id} data-card>
+            <ActivityCard activity={a} catImage={catImage} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -173,16 +363,16 @@ export default function ActividadesPage() {
   const isOtras = selectedCat === "Otras Actividades";
 
   return (
-    <div className="min-h-svh bg-[#F5F0E8]">
+    <div className="min-h-svh bg-[#FFFBF3]">
       <Header />
 
-      <div className="pt-14">
+      <div className={selectedCat ? "" : "pt-14"}>
 
         {!selectedCat ? (
           /* ── Category list ── */
           <div className="flex flex-col">
           {/* Season toggle */}
-          <div className="flex gap-2 px-4 pt-8 pb-3 bg-[#F5F0E8] justify-center">
+          <div className="flex gap-2 px-4 pt-8 pb-3 bg-[#FFFBF3] justify-center">
             {(["verano", "invierno"] as const).map((s) => (
               <button
                 key={s}
@@ -223,8 +413,9 @@ export default function ActividadesPage() {
             )}
           </div>
           </div>
+        ) : selectedCat === "Centro de Ski" ? (
+          <CentroDeSkiView onBack={() => setSelectedCat(null)} skiActivities={activities.filter(a => a.season === "invierno" && a.category.startsWith("SKI –"))} />
         ) : (
-          /* ── Category detail ── */
           <div className="pb-24 md:pb-12">
             {/* Hero — full width */}
             <div className="relative overflow-hidden w-full" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>

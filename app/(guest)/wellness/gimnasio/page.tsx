@@ -20,9 +20,9 @@ export default function GimnasioPage() {
   }, []);
 
   return (
-    <div className="min-h-svh bg-[#F5F0E8]">
+    <div className="min-h-svh bg-[#FFFBF3]">
       <Header />
-      <div className="pt-14">
+      <div>
         <div className="relative overflow-hidden shadow-lg" style={{ height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${heroImg}')` }} />
           <div className="absolute inset-0 bg-black/40" />
@@ -36,29 +36,29 @@ export default function GimnasioPage() {
 
         <div className="px-4 py-5 pb-24 md:pb-12 flex flex-col gap-4 md:max-w-3xl md:mx-auto">
           {/* Hours */}
-          <div className="bg-white rounded-2xl p-4 border border-[#EDE6D8]">
-            <p className="font-semibold text-[#1B4332] text-[14px] mb-1">Horarios de Atención:</p>
+          <div className="bg-[#F3EDE4] rounded-2xl p-4 border border-[#EDE6D8]">
+            <p style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 20, lineHeight: 1, color: "#54432B" }} className="mb-1">Horarios de Atención:</p>
             <p className="text-[13px] text-[#3D2B1F]">Horario Continuo</p>
           </div>
 
           {/* Classes */}
-          <h2 className="font-playfair text-[#1B4332] text-[22px] font-bold">Fitness y Clases</h2>
+          <h2 style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 32, lineHeight: 1, color: "#54432B", textAlign: "center" }}>Fitness y Clases</h2>
           {classes.length > 0 ? (
             classes.map(c => (
-              <div key={c.id} className="bg-white rounded-2xl p-4 border border-[#EDE6D8] shadow-sm">
-                <h3 className="font-semibold text-[#1B4332] text-[15px] mb-1">{c.name}</h3>
+              <div key={c.id} className="bg-[#F3EDE4] rounded-2xl p-4 border border-[#EDE6D8] shadow-sm">
+                <h3 style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 20, lineHeight: 1, color: "#54432B" }} className="mb-1">{c.name}</h3>
                 {c.description && <p className="text-[#6B6B6B] text-[13px] leading-relaxed mb-2">{c.description}</p>}
                 <div className="flex items-center gap-4">
                   {c.schedule && (
-                    <div className="flex items-center gap-1.5 text-[#7B6354]">
-                    <i className="fi-rs-clock-three" style={{ fontSize: 13 }} />
-                      <span className="text-[12px] font-medium">{c.schedule}</span>
+                    <div className="flex items-center gap-1.5">
+                    <i className="fi-rs-clock-three" style={{ fontSize: 13, color: "#DBA33B" }} />
+                      <span className="text-[12px] font-medium text-[#54432B]">{c.schedule}</span>
                     </div>
                   )}
                   {c.price && (
-                    <div className="flex items-center gap-1.5 text-[#1B4332]">
-                    <i className="fi-rs-usd-circle" style={{ fontSize: 13 }} />
-                      <span className="text-[12px] font-semibold">{c.price}</span>
+                    <div className="flex items-center gap-1.5">
+                    <i className="fi-rs-usd-circle" style={{ fontSize: 13, color: "#DBA33B" }} />
+                      <span style={{ fontFamily: "'Cooper Hewitt', sans-serif", fontWeight: 400, fontSize: 15, lineHeight: 1, color: "#54432B" }}>{c.price}</span>
                     </div>
                   )}
                 </div>

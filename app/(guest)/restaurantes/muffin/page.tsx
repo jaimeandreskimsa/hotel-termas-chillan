@@ -8,25 +8,28 @@ import CategoryTabs from "@/components/CategoryTabs";
 interface Item { id: number; category: string; name: string; price: string | null; }
 interface Schedule { id: number; info: string; }
 
-const CATEGORIES = ["Pastelería", "Bebidas Calientes", "Bebidas Frías"];
-
 export default function MuffinPage() {
-  const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
+  const [activeCategory, setActiveCategory] = useState("");
   const [items, setItems] = useState<Item[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/restaurantes/muffin").then(r => r.json()).then(d => setItems(d.items ?? []));
+    fetch("/api/restaurantes/muffin").then(r => r.json()).then(d => {
+      const loaded = d.items ?? [];
+      setItems(loaded);
+      if (loaded.length > 0) setActiveCategory(loaded[0].category);
+    });
     fetch("/api/restaurantes/schedules?restaurant=muffin").then(r => r.json()).then(d => setSchedules(d.schedules ?? []));
   }, []);
 
+  const categories = Array.from(new Set(items.map((i) => i.category)));
   const filtered = items.filter(i => i.category === activeCategory);
 
   return (
-    <div className="min-h-svh bg-[#F5F0E8]">
+    <div className="min-h-svh bg-[#FFFBF3]">
       <Header />
-      <div className="pt-14">
+      <div>
         {/* Hero */}
         <div className="relative overflow-hidden" style={{ width: '100%', height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
           <img src="/images/muffin.jpg" alt="Muffin Café" className="absolute inset-0 w-full h-full object-cover" />
@@ -46,12 +49,12 @@ export default function MuffinPage() {
             ))}
           </div>
         )}
-        <CategoryTabs categories={CATEGORIES} active={activeCategory} onChange={setActiveCategory} bg="bg-transparent" />
+        <CategoryTabs categories={categories} active={activeCategory} onChange={setActiveCategory} bg="bg-transparent" />
 
         <div className="px-4 py-5 pb-24 md:pb-12 flex flex-col gap-2 md:max-w-3xl md:mx-auto">
           {filtered.length > 0 ? (
             filtered.map(item => (
-              <div key={item.id} className="bg-white rounded-xl px-4 py-3 border border-[#EDE6D8] flex justify-between items-center shadow-sm">
+              <div key={item.id} className="bg-[#F3EDE4] rounded-xl px-4 py-3 border border-[#EDE6D8] flex justify-between items-center shadow-sm">
                 <span className="text-[#3D2B1F] text-[14px] font-medium">{item.name}</span>
                 {item.price && <span className="text-[#1B4332] font-semibold text-[13px]">{item.price}</span>}
               </div>

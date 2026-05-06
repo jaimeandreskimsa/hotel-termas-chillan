@@ -8,19 +8,22 @@ import CategoryTabs from "@/components/CategoryTabs";
 interface Item { id: number; category: string; subcategory: string | null; name: string; description: string | null; price: string | null; }
 interface Schedule { id: number; info: string; }
 
-const CATEGORIES = ["Vinos", "Bebidas Calientes"];
-
 export default function ArboledaPage() {
-  const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
+  const [activeCategory, setActiveCategory] = useState("");
   const [items, setItems] = useState<Item[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const router = useRouter();;
+  const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/restaurantes/arboleda").then(r => r.json()).then(d => setItems(d.items ?? []));
+    fetch("/api/restaurantes/arboleda").then(r => r.json()).then(d => {
+      const loaded = d.items ?? [];
+      setItems(loaded);
+      if (loaded.length > 0) setActiveCategory(loaded[0].category);
+    });
     fetch("/api/restaurantes/schedules?restaurant=arboleda").then(r => r.json()).then(d => setSchedules(d.schedules ?? []));
   }, []);
 
+  const categories = Array.from(new Set(items.map((i) => i.category)));
   const filtered = items.filter(i => i.category === activeCategory);
   const bySubcategory = filtered.reduce<Record<string, Item[]>>((acc, item) => {
     const key = item.subcategory ?? "General";
@@ -30,9 +33,9 @@ export default function ArboledaPage() {
   }, {});
 
   return (
-    <div className="min-h-svh bg-[#F5F0E8]">
+    <div className="min-h-svh bg-[#FFFBF3]">
       <Header />
-      <div className="pt-14">
+      <div>
         {/* Hero */}
         <div className="relative overflow-hidden" style={{ width: '100%', height: 378, borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
           <img src="/images/arboleda.jpg" alt="Arboleda" className="absolute inset-0 w-full h-full object-cover" />
@@ -54,21 +57,21 @@ export default function ArboledaPage() {
             ))}
           </div>
         )}
-        <CategoryTabs categories={CATEGORIES} active={activeCategory} onChange={setActiveCategory} bg="bg-transparent" />
+        <CategoryTabs categories={categories} active={activeCategory} onChange={setActiveCategory} bg="bg-transparent" />
 
         <div className="px-4 py-5 pb-24 md:pb-12 flex flex-col gap-4 md:max-w-3xl md:mx-auto">
           {Object.entries(bySubcategory).map(([sub, subItems]) => (
             <div key={sub}>
-              <h3 className="font-playfair text-[#1B4332] text-[18px] font-bold mb-3">{sub}</h3>
+              <h3 className="font-playfair font-bold text-[#54432B] text-[32px] leading-none text-center mb-3">{sub}</h3>
               <div className="flex flex-col gap-2">
                 {subItems.map(item => (
-                  <div key={item.id} className="bg-white rounded-2xl px-4 py-3 border border-[#EDE6D8] shadow-sm flex justify-between items-start gap-3">
+                  <div key={item.id} className="bg-[#F3EDE4] rounded-2xl px-4 py-3 border border-[#EDE6D8] shadow-sm flex justify-between items-start gap-3">
                     <div className="flex-1">
                       <p className="text-[#3D2B1F] text-[14px] font-medium">{item.name}</p>
                       {item.description && <p className="text-[#9B9280] text-[12px] mt-0.5">{item.description}</p>}
                     </div>
                     {item.price && (
-                      <span className="text-[#1B4332] font-semibold text-[13px] shrink-0">{item.price}</span>
+                      <span className="shrink-0" style={{ fontFamily: 'Cooper Hewitt, sans-serif', fontWeight: 705, fontSize: 15, lineHeight: 1, color: '#54432B' }}>{item.price}</span>
                     )}
                   </div>
                 ))}
