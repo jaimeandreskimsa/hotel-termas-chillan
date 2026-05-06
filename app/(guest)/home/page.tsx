@@ -311,10 +311,10 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Próximos eventos + Emergencia side by side on desktop */}
-        <div className="mt-7 md:max-w-5xl md:mx-auto md:flex md:gap-6 md:items-start px-4">
+        {/* Próximos eventos + Emergencia */}
+        <div className="mt-7 md:max-w-5xl md:mx-auto px-4">
           {/* Próximos eventos */}
-          <div className="md:flex-1">
+          <div>
             <p className="text-[#3D2B1F] text-center mb-4" style={{ fontFamily: "'Poltawski Nowy', Georgia, serif", fontWeight: 700, fontSize: 32, lineHeight: 1 }}>
               Próximos eventos
             </p>
@@ -343,7 +343,7 @@ export default function HomePage() {
           </div>
 
           {/* Emergencia */}
-          <div className="mt-7 md:mt-0 md:w-72 shrink-0">
+          <div className="mt-7">
             <div className="bg-[#EDE8E3] rounded-2xl p-6 text-center">
               <h2 className="font-playfair text-[20px] font-bold text-[#2D2D2D] mb-3 underline decoration-2 underline-offset-4">
                 Emergencia
