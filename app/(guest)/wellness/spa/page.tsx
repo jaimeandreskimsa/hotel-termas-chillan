@@ -7,16 +7,27 @@ import BottomNav from "@/components/BottomNav";
 interface SpaService { id: number; category: string; name: string; description: string | null; duration: string | null; price: string | null; }
 interface Schedule { venue: string; hours: string; }
 
-const CATEGORIES = ["Masajes y terapias", "Rituales de Renovación Corporal", "Tratamientos Faciales y Jacuzzi", "Peluquería y Manicure", "Circuitos de Agua"];
+const CATEGORY_ORDER = ["Masajes y Terapias", "Masajes y terapias", "Rituales de Renovación", "Rituales de Renovación Corporal", "Faciales y Jacuzzi", "Tratamientos Faciales y Jacuzzi", "Peluquería y Manicure", "Circuitos de Agua"];
 
 export default function SpaPage() {
   const router = useRouter();
-  const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
+  const [activeCategory, setActiveCategory] = useState("");
   const [services, setServices] = useState<SpaService[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [heroImg, setHeroImg] = useState("/images/spa.jpg");
   const [reglamento, setReglamento] = useState("");
   const [reglamentoOpen, setReglamentoOpen] = useState(false);
+
+  const categories = Array.from(new Set(services.map(s => s.category)))
+    .sort((a, b) => {
+      const ai = CATEGORY_ORDER.indexOf(a);
+      const bi = CATEGORY_ORDER.indexOf(b);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+
+  useEffect(() => {
+    if (categories.length > 0 && !activeCategory) setActiveCategory(categories[0]);
+  }, [categories.join()]);
 
   useEffect(() => {
     fetch("/api/spa/services").then(r => r.json()).then(d => setServices(d.services ?? []));
@@ -52,7 +63,7 @@ export default function SpaPage() {
       {/* Category tabs — below hero */}
       <div className="bg-[#1B4332]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
         <div className="flex gap-2 overflow-x-auto no-scrollbar px-3 py-2 md:justify-center">
-          {CATEGORIES.map(cat => (
+          {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
