@@ -189,7 +189,7 @@ export default function HabitacionPage() {
           <SubHero title="Información" imageSrc={navImgs.img_informacion} onBack={goBack} />
           <div className="px-4 py-5 flex flex-col gap-3 md:max-w-3xl md:mx-auto">
             {INFO_SECTIONS.map(sec => (
-              <button key={sec.key} onClick={() => setView({ type: "info_detail", section: sec.key, label: sec.label })} className={`flex justify-between items-center px-4 py-4 rounded-xl text-left shadow-sm ${sec.emergency ? "bg-[#D4722A]" : "bg-white border border-[#EDE6D8]"}`}>
+              <button key={sec.key} onClick={() => setView({ type: "info_detail", section: sec.key, label: sec.label })} className={`flex justify-between items-center px-4 py-4 rounded-xl text-left shadow-sm ${sec.emergency ? "bg-[#D4722A]" : "bg-[#F3ECE4] border border-[#EDE6D8]"}`}>
                 <span className={`text-[15px] font-medium ${sec.emergency ? "text-white" : "text-[#3D2B1F]"}`}>{sec.label}</span>
                 <ChevronRight size={18} className={sec.emergency ? "text-white" : "text-[#9B9280]"} />
               </button>
