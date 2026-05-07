@@ -344,7 +344,7 @@ export default function HomePage() {
 
           {/* Emergencia */}
           <div className="mt-7">
-            <div className="bg-[#EDE8E3] rounded-2xl p-6 text-center">
+            <div className="bg-[#F3ECE4] rounded-2xl p-6 text-center">
               <h2 className="font-playfair text-[20px] font-bold text-[#2D2D2D] mb-3 underline decoration-2 underline-offset-4">
                 Emergencia
               </h2>

@@ -317,7 +317,7 @@ function ActivitySlider({ activities, catImage }: { activities: Activity[]; catI
 export default function ActividadesPage() {
   const [season, setSeason] = useState<"verano" | "invierno">("verano");
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [selectedCat, setSelectedCat] = useState<string | null>(null);
+  const [selectedCat, setSelectedCat] = useState<string | null>("Otras Actividades");
   const [catImgMap, setCatImgMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
